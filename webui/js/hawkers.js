@@ -2,8 +2,30 @@ var main = function() {
 
 }
 
+$.postJSON = function(url, data, callback) {
+    return $.ajax({
+        'type': 'POST',
+        'url': url,
+        'contentType': 'application/json',
+        'data': data,
+        'dataType': 'json',
+        'success': callback
+    });
+};
+
 var getDistance = function(destPincode) {
-	return "1.0 Km";
+	$.ajax({
+		type: 'POST',
+		url: 'http://localhost:5000/distance',
+		data: JSON.stringify({'pincode': destPincode}),
+		dataType: 'json',
+		contentType: 'application/json; charset=utf-8'
+	}).done(function(msg) {
+		console.log(msg['status']);
+		console.log(msg['text']);
+		console.log(msg['value']);
+	});
+	return "0";
 }
 
 var submitpin = function(event) {
