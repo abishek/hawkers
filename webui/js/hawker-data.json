@@ -1,0 +1,56 @@
+{
+	"hawkers" : [
+		{
+			"name":"hawker one",
+			"address":"block one",
+			"pincode":"111222",
+			"contact":"99991111",
+			"menu" : [
+				{
+					"name":"item1",
+					"description":"desc1",
+					"price":"S$1.00",
+					"isAvailable":"true"
+				},
+				{
+					"name":"item2",
+					"description":"desc2",
+					"price":"S$1.20",
+					"isAvailable":"true"			
+				},
+				{
+					"name":"item3",
+					"description":"desc3",
+					"price":"S$1.50",
+					"isAvailable":"false"			
+				}
+			]
+		},
+		{
+			"name":"hawker two",
+			"address":"block two",
+			"pincode":"111333",
+			"contact":"99992222",
+			"menu" : [
+				{
+					"name":"item1",
+					"description":"desc1",
+					"price":"S$2.00",
+					"isAvailable":"true"
+				},
+				{
+					"name":"item2",
+					"description":"desc2",
+					"price":"S$2.20",
+					"isAvailable":"true"			
+				},
+				{
+					"name":"item3",
+					"description":"desc3",
+					"price":"S$2.50",
+					"isAvailable":"false"			
+				}
+			]
+		}
+	]
+}
