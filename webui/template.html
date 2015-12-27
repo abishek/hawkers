@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hawkerApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>The Hawker Delivery Project</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>	
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+			<!-- Branding -->
+				<div class="jumbotron">
+  					<h1 class="text-center">The Hawker Delivery Project</h1>
+  					<p></p>
+  					<p class="text-right"><small>your favourite food from your nearby hawker</small></p>
+  				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+			<!-- Pincode based vendors -->
+				<form name="pinCodeForm" class="form-inline">
+    				<div class="form-group">
+     			 		<label for="pinCode">Pincode</label>
+      					<input type="text" class="form-control" placeholder="123456">
+    				</div>
+    				<button type="submit" class="btn btn-default">Find</button>
+  				</form>
+  			</div>
+  		</div>
+
+  		<div class="row">
+			<div class="col-md-8">
+				<div class="list-group">
+   					<div class="list-group-item">
+   						<!-- hawker details followed by Menu -->
+   							<h3>Hawker One</h3>
+   							<em>Indian Muslim Food</em>
+   							<table class="table table-striped">
+   								<thead>
+   								<tr>
+   									<th colspan="4">Menu</th>
+   								</tr>
+   								</thead>
+   								<tr>
+   									<td>Item 1</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 2</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.30</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 3</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$2.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   							</table>
+   					</div>
+   					<div class="list-group-item">
+   						<!-- hawker details followed by Menu -->
+   							<h3>Hawker Two</h3>
+   							<em>Chinese Food</em>
+   							<table class="table table-striped">
+   								<thead>
+   								<tr>
+   									<th colspan="4">Menu</th>
+   								</tr>
+   								</thead>
+   								<tr>
+   									<td>Item 1</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 2</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.30</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 3</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$2.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   							</table>
+   					</div>
+   					<div class="list-group-item">
+   						<!-- hawker details followed by Menu -->
+   							<h3>Hawker Three</h3>
+   							<em>Noodles and Soup</em>
+   							<table class="table table-striped">
+   								<thead>
+   								<tr>
+   									<th colspan="4">Menu</th>
+   								</tr>
+   								</thead>
+   								<tr>
+   									<td>Item 1</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 2</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$1.30</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   								<tr>
+   									<td>Item 3</td>
+   									<td><img src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   									<td>S$2.00</td>
+   									<td><button type="btn btn-default">Add To Order</button></td>
+   								</tr>
+   							</table>
+   					</div>
+   				</div>
+  			</div>
+	
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-12">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr><th colspan="3">Your Order</th></tr>
+  						</thead>
+  						<tr>
+  							<td>Item 1</td>
+  							<td>1</td>
+  							<td>S$1.20</td>
+  						</tr>
+  						<tr>
+  							<td>Item 2</td>
+  							<td>1</td>
+  							<td>S$1.00</td>
+  						</tr>
+  						<tr>
+  							<td>Item 3</td>
+  							<td>1</td>
+  							<td>S$2.00</td>
+  						</tr>
+  						<tr class="info">
+  							<td>Total</td>
+  							<td>3</td>
+  							<td>S$4.20</td>
+  						</tr>
+  					</table>
+  					</div>
+  				</div>
+  				<div class="row">
+  					<form class="form-horizontal">
+  						<div class="form-group">
+  							<label for="customerName" class="col-md-offset-1 col-md-5">Name :</label>
+  							<input type="text" placeholder="Your Name">
+  						</div>
+  						<div class="form-group">
+  							<label for="customerEmail" class="col-md-offset-1 col-md-5">EMail :</label>
+  							<input type="email" placeholder="you@gmail.com">
+  						</div>
+  						<div class="form-group">
+  							<label for="customerHP" class="col-md-offset-1 col-md-5">Phone :</label>
+  							<input type="text" placeholder="99991111">
+  						</div>
+  						<button class="btn btn-default col-md-offset-2 col-md-7">Confirm Order</button>
+  					  </form>
+  				</div>
+  			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+
+
