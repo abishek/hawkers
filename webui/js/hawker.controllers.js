@@ -1,28 +1,36 @@
 ( function() {
-	var app = angular.module("hawkerAppControllers", [ ]);
+	var app = angular.module("hawkerAppControllers", [ "hawkerAppDS"]);
 
-	app.controller("PincodeController", ['$http', function($http, appController) {
-		this.locateHawkers = function() {
-			console.log(this.pincode);
+	app.controller("PincodeController", ['$http', "$scope", 'HawkerAppDS', function($http, $scope, HawkerAppDS) {
+		$scope.locateHawkers = function() {
+			console.log($scope.pincode);
 			// submit this pincode and get a list of hawkers as result.
-			$http.get('/hawkers/list/'+this.pincode+'/')
+			$http.get('/hawkers/list/'+$scope.pincode+'/')
 			.success(function(data) {
 				// populate this data into the list group below
-				console.log(data);
-				appController.hawkerList = data.hawkers; 
+				HawkerAppDS.updateHawkerList(data.hawkers);
+				HawkerAppDS.updateHawkerListMessage("No Hawkers found near your location. Our teams are working on getting more listings to help you!");
 			})
 			.error(function(data, status) {
-				console.warn(data, status);
+				HawkerAppDS.updateHawkerList([]);
+				HawkerAppDS.updateHawkerListMessage("Some Error Occurred getting hawkers for your location. Try again later.");
 			});
 		};
 	}]);
 
-	app.controller("HawkerListController", ["$http", function($http) {
-		this.hawkerList = [];
+	app.controller("HawkerListController", ['$scope', '$http', 'HawkerAppDS', function($scope, $http, HawkerAppDS) {
+		$scope.hawkerList = [];
+		$scope.hawkerListMessage = "There are no hawkers to show. Please search by pincode.";
+
+		$scope.$on('messageUpdated', function() {
+			$scope.hawkerListMessage = HawkerAppDS.hawkerListMessage;
+		});
+
 	}]);
 
-	app.controller("OrderController", ["$http", function($http) {
-		this.orderData = [];
+	app.controller("OrderController", ["$http", "$scope", "HawkerAppDS", function($http, $scope, HawkerAppDS) {
+		$scope.orderData = [];
+		$scope.orderEmptyMessage = "No Orders yet";
 	}]);
 
 }) ();

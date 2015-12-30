@@ -1,7 +1,7 @@
 <div class="list-group" ng-controller="HawkerListController as hlCtrl">
-	<div class="col-md-12" ng-hide="hlCtrl.hawkerList.length">
-		<span>
-			<h3>There are no hawkers to show. Please search by pincode.</h3>
-		</span>
+	<div class="col-md-12" ng-hide="hawkerList.length">
+		<form>
+			<h3> {{ hawkerListMessage }} </h3>
+		</form>
 	</div>
 </div>
