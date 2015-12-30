@@ -10,19 +10,22 @@
 					"name":"item1",
 					"description":"desc1",
 					"price":"S$1.00",
-					"isAvailable":"true"
+					"isAvailable":"true",
+					"image":"http://placehold.it/140x140"
 				},
 				{
 					"name":"item2",
 					"description":"desc2",
 					"price":"S$1.20",
-					"isAvailable":"true"			
+					"isAvailable":"true",
+					"image":"http://placehold.it/140x140"
 				},
 				{
 					"name":"item3",
 					"description":"desc3",
 					"price":"S$1.50",
-					"isAvailable":"false"			
+					"isAvailable":"false",
+					"image":"http://placehold.it/140x140"	
 				}
 			]
 		},
@@ -36,19 +39,22 @@
 					"name":"item1",
 					"description":"desc1",
 					"price":"S$2.00",
-					"isAvailable":"true"
+					"isAvailable":"true",
+					"image":"http://placehold.it/140x140"
 				},
 				{
 					"name":"item2",
 					"description":"desc2",
 					"price":"S$2.20",
-					"isAvailable":"true"			
+					"isAvailable":"true",
+					"image":"http://placehold.it/140x140"			
 				},
 				{
 					"name":"item3",
 					"description":"desc3",
 					"price":"S$2.50",
-					"isAvailable":"false"			
+					"isAvailable":"false",
+					"image":"http://placehold.it/140x140"			
 				}
 			]
 		}

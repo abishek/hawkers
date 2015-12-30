@@ -12,4 +12,11 @@
 			console.log(this.pinCode);
 		};
 	}]);
+
+	app.directive('pincodeForm', function() {
+		return {
+			restrict: 'E',
+			templateUrl:'pincodeForm.html'
+		};
+	});
 } )();
