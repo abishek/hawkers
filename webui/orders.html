@@ -10,7 +10,7 @@
 </div>
 
 <div class="row" ng-controller="OrderController as custCtrl">
-  	<form class="form-horizontal" ng-submit="custCtrl.submitOrder(oCtrl.orderData)">
+  	<form class="form-horizontal" ng-submit="custCtrl.submitOrder(oCtrl.orderData)" ng-show="orderData.length">
   		<div class="form-group">
   			<label for="customerName" class="col-md-offset-1 col-md-5">Name :</label>
   			<input ng-model="custCtrl.customerName" type="text" placeholder="Your Name">
@@ -23,6 +23,6 @@
   			<label for="customerHP" class="col-md-offset-1 col-md-5">Phone :</label>
   			<input ng-model="custCtrl.customerHP" type="text" placeholder="99991111">
   		</div>
-  		<button class="btn btn-default col-md-offset-2 col-md-7" ng-show="  orderData.length">Confirm Order</button>
+  		<button class="btn btn-default col-md-offset-2 col-md-7">Confirm Order</button>
   	</form>
 </div>
