@@ -5,7 +5,7 @@
 		$scope.locateHawkers = function() {
 			console.log($scope.pincode);
 			// submit this pincode and get a list of hawkers as result.
-			$http.get('/hawkers/list/'+$scope.pincode+'/')
+			$http.get('http://localhost:5000/list/'+$scope.pincode)
 			.success(function(data) {
 				// populate this data into the list group below
 				HawkerAppDS.updateHawkerList(data.hawkers);
@@ -25,7 +25,13 @@
 		$scope.$on('messageUpdated', function() {
 			$scope.hawkerListMessage = HawkerAppDS.hawkerListMessage;
 		});
+		$scope.$on('hawkerListUpdated', function() {
+			$scope.hawkerList = HawkerAppDS.hawkerList;
+		});
 
+		$scope.addToOrder = function(item) {
+			console.log(item);
+		};
 	}]);
 
 	app.controller("OrderController", ["$http", "$scope", "HawkerAppDS", function($http, $scope, HawkerAppDS) {

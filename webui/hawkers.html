@@ -1,7 +1,23 @@
 <div class="list-group" ng-controller="HawkerListController as hlCtrl">
 	<div class="col-md-12" ng-hide="hawkerList.length">
-		<form>
 			<h3> {{ hawkerListMessage }} </h3>
-		</form>
+	</div>
+	<div class="list-group=item" ng-show="hawkerList.length" ng-repeat="hawker in hawkerList">
+		<h3>{{hawker.name}}</h3>
+		<span>{{hawker.address}}, {{hawker.pincode}}</span>
+		<blockquote>{{hawker.contact}}</blockquote>
+		<table class="table table-striped">
+   			<thead>
+   			<tr>
+   				<th colspan="4">Menu</th>
+   			</tr>
+   			</thead>
+   			<tr ng-repeat="item in hawker.menu">
+   				<td>{{item.name}}<p/><em>{{item.description}}</em></td>
+   				<td><img ng-src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
+   				<td>{{item.price}}</td>
+   				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(item.name)">Add To Order</button></td>
+   			</tr>
+   		</table>
 	</div>
 </div>
