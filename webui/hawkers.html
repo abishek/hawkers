@@ -4,8 +4,8 @@
 	</div>
 	<div class="list-group=item" ng-show="hawkerList.length" ng-repeat="hawker in hawkerList">
 		<h3>{{hawker.name}}</h3>
-		<span>{{hawker.address}}, {{hawker.pincode}}</span>
-		<blockquote>{{hawker.contact}}</blockquote>
+		<blockquote>{{hawker.address}}, {{hawker.pincode}}
+		<p/>{{hawker.contact}}</blockquote>
 		<table class="table table-striped">
    			<thead>
    			<tr>
@@ -16,7 +16,7 @@
    				<td>{{item.name}}<p/><em>{{item.description}}</em></td>
    				<td><img ng-src="http://placehold.it/140x140" alt="..." class="img-circle"></td>
    				<td>{{item.price}}</td>
-   				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(item.name)">Add To Order</button></td>
+   				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(item)">Add To Order</button></td>
    			</tr>
    		</table>
 	</div>

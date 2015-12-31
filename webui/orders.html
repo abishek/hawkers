@@ -1,7 +1,17 @@
 <div class="row" ng-controller="OrderController as oCtrl">
 	<div class="col-md-12" ng-show="orderData.length">
 		<table class="table table-bordered table-hover">
-
+      <thead>
+        <tr><th colspan="3">Your Order</th></tr>
+      </thead>
+      <tr ng-repeat="item in orderData">
+        <td>{{item.name}}</td>
+        <td>{{item.price}}</td>
+      </tr>
+      <tr>
+        <td>Total</td>
+        <td>{{totalCost}}</td>
+      </tr>
 		</table>
 	</div>
   <div class="col-md-12" ng-hide="orderData.length">

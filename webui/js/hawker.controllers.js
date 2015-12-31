@@ -30,13 +30,22 @@
 		});
 
 		$scope.addToOrder = function(item) {
-			console.log(item);
+			HawkerAppDS.addToOrderList(item);
 		};
 	}]);
 
 	app.controller("OrderController", ["$http", "$scope", "HawkerAppDS", function($http, $scope, HawkerAppDS) {
 		$scope.orderData = [];
 		$scope.orderEmptyMessage = "No Orders yet";
+		$scope.totalCost = 'S$0.00';
+		$scope.$on('orderListUpdated', function() {
+			$scope.orderData = HawkerAppDS.orderList;
+			var price = 0;
+			for(i=0; i< $scope.orderData.length; i++) {
+				price += parseFloat($scope.orderData[i].price.substring(2));
+			}
+			$scope.totalCost = 'S$' + price.toFixed(2);
+		});
 	}]);
 
 }) ();

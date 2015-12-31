@@ -20,6 +20,11 @@ angular.module("hawkerAppDS", []).factory('HawkerAppDS', function($rootScope) {
 		$rootScope.$broadcast("orderListUpdated");
 	}
 
+	service.addToOrderList = function(item) {
+		this.orderList.push(item);
+		$rootScope.$broadcast("orderListUpdated");
+	}
+
 	return service;
 });
 } )();
