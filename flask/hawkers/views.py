@@ -2,7 +2,7 @@ from flask import request, json, jsonify
 from hawkers import app
 import googlemaps
 
-key = 'AIzaSyDEvi2UJv7j7fnNWjsucmXoQpfu_SrMq2Y'
+key = ''
 client = googlemaps.Client(key)
 
 test_data = {'hawkers': [{'name':'Hawker One', 
