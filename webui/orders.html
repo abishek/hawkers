@@ -1,38 +1,40 @@
-<div class="row" ng-controller="OrderController as oCtrl">
-	<div class="col-md-12" ng-show="orderData.length">
-		<table class="table table-bordered table-hover">
-      <thead>
-        <tr><th colspan="3">Your Order</th></tr>
-      </thead>
-      <tr ng-repeat="item in orderData">
-        <td>{{item.name}}</td>
-        <td>{{item.price}}</td>
-      </tr>
-      <tr>
-        <td>Total</td>
-        <td>{{totalCost}}</td>
-      </tr>
-		</table>
-	</div>
-  <div class="col-md-12" ng-hide="orderData.length">
-      <h3 align="center">{{orderEmptyMessage}}</h3><p/>
+<div ng-controller="OrderController as oCtrl">
+  <div class="row">
+  	<div class="col-md-12" ng-show="orderData.length">
+  		<table class="table table-bordered table-hover">
+        <thead>
+          <tr><th colspan="3">Your Order</th></tr>
+        </thead>
+        <tr ng-repeat="item in orderData">
+          <td>{{item.name}}</td>
+          <td>{{item.price}}</td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td>{{totalCost}}</td>
+        </tr>
+  		</table>
+  	</div>
+    <div class="col-md-12" ng-hide="orderData.length">
+        <h3 align="center">{{orderEmptyMessage}}</h3><p/>
+    </div>
   </div>
-</div>
-
-<div class="row" ng-controller="OrderController as custCtrl">
-  	<form class="form-horizontal" ng-submit="custCtrl.submitOrder(oCtrl.orderData)" ng-show="orderData.length">
-  		<div class="form-group">
-  			<label for="customerName" class="col-md-offset-1 col-md-5">Name :</label>
-  			<input ng-model="custCtrl.customerName" type="text" placeholder="Your Name">
-  		</div>
-  		<div class="form-group">
-  			<label for="customerEmail" class="col-md-offset-1 col-md-5">EMail :</label>
-  			<input ng-model="custCtrl.customerEmail" type="email" placeholder="you@gmail.com">
-  		</div>
-  		<div class="form-group">
-  			<label for="customerHP" class="col-md-offset-1 col-md-5">Phone :</label>
-  			<input ng-model="custCtrl.customerHP" type="text" placeholder="99991111">
-  		</div>
-  		<button class="btn btn-default col-md-offset-2 col-md-7">Confirm Order</button>
-  	</form>
+  
+  <div class="row">
+    	<form class="form-horizontal" name="custDetailsForm" ng-submit="custDetailsForm.$valid && submitOrder(orderData)" ng-show="orderData.length" novalidate>
+    		<div class="form-group">
+    			<label for="customerName" class="col-md-offset-1 col-md-5">Name :</label>
+    			<input ng-model="customerName" type="text" required placeholder="Your Name">
+    		</div>
+    		<div class="form-group">
+    			<label for="customerEmail" class="col-md-offset-1 col-md-5">EMail :</label>
+    			<input ng-model="customerEmail" type="email" required placeholder="you@gmail.com">
+    		</div>
+    		<div class="form-group">
+    			<label for="customerHP" class="col-md-offset-1 col-md-5">Phone :</label>
+    			<input ng-model="customerHP" type="text" required placeholder="99991111">
+    		</div>
+    		<button class="btn btn-default col-md-offset-2 col-md-7" ng-disabled="!custDetailsForm.$valid">Confirm Order</button>
+    	</form>
+  </div>
 </div>

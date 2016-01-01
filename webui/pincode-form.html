@@ -5,5 +5,5 @@
      	<input ng-model="pincode" type="text" class="form-control" placeholder="123456" required 
      							ng-minlength="6" ng-maxlength="6" ng-pattern="/^[0-9]{1,6}$/" >
    	</div>
-   	<button type="submit" class="btn btn-default">Find</button>
+   	<button type="submit" class="btn btn-default" ng-disabled="!pinCodeForm.$valid">Find</button>
 </form>

@@ -46,6 +46,31 @@
 			}
 			$scope.totalCost = 'S$' + price.toFixed(2);
 		});
+
+		$scope.submitOrder = function(orderData) {
+			console.log(orderData);
+			console.log($scope.customerName);
+			console.log($scope.customerEmail);
+			console.log($scope.customerHP);
+			var postData = {};
+			postData['orderData'] = orderData;
+			postData['name'] = $scope.customerName;
+			postData['email'] = $scope.customerEmail;
+			postData['HP'] = $scope.customerHP;
+			// send this data to flask
+			$http.post('http://localhost:5000/order/place', postData )
+			.success(function() {
+				$scope.orderEmptyMessage = "Order Placed";
+				$scope.orderData = [];
+				$scope.customerHP = '';
+				$scope.customerEmail = '';
+				$scope.customerName = '';
+			})
+			.error(function() {
+				// handle this.
+				alert("Failed to place order");
+			});
+		};
 	}]);
 
 }) ();

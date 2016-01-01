@@ -79,3 +79,8 @@ def get_hawkers_by_pincode(pincode) :
 		return jsonify(test_data)
 	else :
 		return jsonify({'hawkers':[]})
+
+@app.route('/order/place', methods=['POST'])
+def place_order() :
+	print request.get_json()
+	return 'Success';
