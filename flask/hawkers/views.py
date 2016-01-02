@@ -1,9 +1,11 @@
 from flask import request, json, jsonify
+from flask.ext.mail import Mail, Message
 from hawkers import app
 import googlemaps
+from datetime import datetime
 
-key = ''
-client = googlemaps.Client(key)
+client = googlemaps.Client(app.config['MATRIX_KEY'])
+mail = Mail(app)
 
 test_data = {'hawkers': [{'name':'Hawker One', 
 						  'address':'Block 1', 
@@ -82,5 +84,15 @@ def get_hawkers_by_pincode(pincode) :
 
 @app.route('/order/place', methods=['POST'])
 def place_order() :
-	print request.get_json()
+	print "processing order data"
+	msg = Message('Order placed %s'%str(datetime.now()), sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com'])
+	msg.html = str(request.get_json())
+	mail.send(msg)
 	return 'Success';
+
+@app.route('/mail/test')
+def send_test_mail() :
+	msg = Message('test email from hawker app', sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com'])
+	msg.html = "This is a test email. I hope you can receive it."
+	mail.send(msg)
+	return "Email sent"	

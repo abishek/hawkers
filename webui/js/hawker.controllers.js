@@ -65,6 +65,8 @@
 				$scope.customerHP = '';
 				$scope.customerEmail = '';
 				$scope.customerName = '';
+				$scope.totalCost = 'S$0.00';
+				HawkerAppDS.updateOrderList($scope.orderData);
 			})
 			.error(function() {
 				// handle this.
