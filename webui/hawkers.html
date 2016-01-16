@@ -16,7 +16,7 @@
    				<td>{{item.name}}<p/><em>{{item.description}}</em></td>
    				<td><img ng-src={{item.image}} alt="..." class="img-circle"></td>
    				<td>{{item.price}}</td>
-   				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(item)">Add To Order</button></td>
+   				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(hawker, item)">Add To Order</button></td>
    			</tr>
    		</table>
 	</div>

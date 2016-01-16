@@ -22,6 +22,8 @@
 		$scope.hawkerList = [];
 		$scope.hawkerListMessage = "There are no hawkers to show. Please search by pincode.";
 
+		$scope.currentHawker = null;
+
 		$scope.$on('messageUpdated', function() {
 			$scope.hawkerListMessage = HawkerAppDS.hawkerListMessage;
 		});
@@ -29,8 +31,18 @@
 			$scope.hawkerList = HawkerAppDS.hawkerList;
 		});
 
-		$scope.addToOrder = function(item) {
-			HawkerAppDS.addToOrderList(item);
+		$scope.addToOrder = function(hawker, item) {
+			if($scope.currentHawker == null) {
+				$scope.currentHawker = hawker;
+				HawkerAppDS.addToOrderList(item);
+			} else {
+				if($scope.currentHawker == hawker) {
+					HawkerAppDS.addToOrderList(item);
+				} else {
+					console.log("cannot mix order from multiple vendors.");
+					alert("Sorry! In this version, we do not allow orders from multiple vendors in the same order.");
+				}
+			}
 		};
 	}]);
 
