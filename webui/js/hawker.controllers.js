@@ -47,11 +47,11 @@
 			$scope.totalCost = 'S$' + price.toFixed(2);
 		});
 
+		$scope.removeFromOrder = function(item) {
+			HawkerAppDS.removeFromOrderList(item);
+		};
+
 		$scope.submitOrder = function(orderData) {
-			console.log(orderData);
-			console.log($scope.customerName);
-			console.log($scope.customerEmail);
-			console.log($scope.customerHP);
 			var postData = {};
 			postData['orderData'] = orderData;
 			postData['name'] = $scope.customerName;
@@ -71,6 +71,7 @@
 			})
 			.error(function() {
 				// handle this.
+				console.log("Error occured trying to place the order.")
 				alert("Failed to place order");
 			});
 		};

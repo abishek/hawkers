@@ -25,6 +25,11 @@ angular.module("hawkerAppDS", []).factory('HawkerAppDS', function($rootScope) {
 		$rootScope.$broadcast("orderListUpdated");
 	}
 
+	service.removeFromOrderList = function(item) {
+		this.orderList.splice(this.orderList.indexOf(item), 1);
+		$rootScope.$broadcast("orderListUpdated");
+	}
+
 	return service;
 });
 } )();

@@ -8,6 +8,10 @@
         <tr ng-repeat="item in orderData track by $index">
           <td>{{item.name}}</td>
           <td>{{item.price}}</td>
+          <td><button type="button" class="btn btn-default" ng-click="removeFromOrder(item)" aria-label="Remove">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </button>
+          </td>
         </tr>
         <tr>
           <td>Total</td>
