@@ -57,6 +57,7 @@
 			postData['name'] = $scope.customerName;
 			postData['email'] = $scope.customerEmail;
 			postData['HP'] = $scope.customerHP;
+			postData['totalCost'] = $scope.totalCost;
 			// send this data to flask
 			$http.post('http://localhost:5000/order/place', postData )
 			.success(function() {

@@ -12,46 +12,46 @@ test_data = {'hawkers': [{'name':'Hawker One',
 						  'pincode':'111111', 
 						  'contact':'99991111',
 						  'menu':[{
-						  'name':'Item 1',
-						  'description':'Desc 1',
+						  'name':'Mix Veg Curry',
+						  'description':'North Indian Side dish for Rice and Roti',
 						  'price': 'S$1.00',
 						  'isAvailable':'True',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/1.jpg'
 						  }, {
-						  'name':'Item 2',
-						  'description':'Desc 2',
-						  'price': 'S$1.20',
+						  'name':'South Indian Lunch',
+						  'description':'Complete Platter with variety rice and side dish',
+						  'price': 'S$3.20',
 						  'isAvailable':'False',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/2.jpg'
 						  }, {
-						  'name':'Item 3',
-						  'description':'Desc 3',
-						  'price': 'S$1.30',
+						  'name':'Brussels Sprouts',
+						  'description':'Indian Style garnished with mustard',
+						  'price': 'S$1.00',
 						  'isAvailable':'True',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/3.jpg'
 						  }]}, 
 						 {'name':'Hawker Two', 
 						  'address':'Block 2', 
 						  'pincode':'222222', 
 						  'contact':'99992222',
 						  'menu':[{
-						  'name':'Item 1',
-						  'description':'Desc 1',
+						  'name':'Idli Vada Combo',
+						  'description':'Authentic South Indian Breakfast Combo',
 						  'price': 'S$2.00',
 						  'isAvailable':'True',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/4.jpg'
 						  }, {
-						  'name':'Item 2',
-						  'description':'Desc 2',
+						  'name':'Kadai Paneer',
+						  'description':'North Indian side dish for Rotis and Pratas',
 						  'price': 'S$2.20',
 						  'isAvailable':'True',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/5.jpg'
 						  }, {
-						  'name':'Item 3',
-						  'description':'Desc 3',
+						  'name':'Indian Milk Sweets',
+						  'description':'Milk and Cashew sweets to saitate the sweet tooth.',
 						  'price': 'S$1.50',
 						  'isAvailable':'True',
-						  'image':'http://placehold.it/140x140'
+						  'image':'/hawkers/images/6.jpg'
 						  }]}]}
 
 @app.route('/')
