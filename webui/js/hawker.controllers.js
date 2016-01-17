@@ -22,7 +22,7 @@
 		$scope.hawkerList = [];
 		$scope.hawkerListMessage = "There are no hawkers to show. Please search by pincode.";
 
-		$scope.currentHawker = null;
+
 
 		$scope.$on('messageUpdated', function() {
 			$scope.hawkerListMessage = HawkerAppDS.hawkerListMessage;
@@ -32,7 +32,7 @@
 		});
 
 		$scope.addToOrder = function(hawker, item) {
-			if($scope.currentHawker == null) {
+			if($scope.currentHawker == undefined) {
 				$scope.currentHawker = hawker;
 				HawkerAppDS.addToOrderList(item);
 			} else {
