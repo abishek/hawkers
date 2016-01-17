@@ -22,18 +22,19 @@
 		$scope.hawkerList = [];
 		$scope.hawkerListMessage = "There are no hawkers to show. Please search by pincode.";
 
-
-
 		$scope.$on('messageUpdated', function() {
 			$scope.hawkerListMessage = HawkerAppDS.hawkerListMessage;
 		});
 		$scope.$on('hawkerListUpdated', function() {
 			$scope.hawkerList = HawkerAppDS.hawkerList;
 		});
+		$scope.$on('currentHawkerSet', function() {
+			$scope.currentHawker = HawkerAppDS.currentHawker;
+		});
 
 		$scope.addToOrder = function(hawker, item) {
-			if($scope.currentHawker == undefined) {
-				$scope.currentHawker = hawker;
+			if(typeof $scope.currentHawker == "undefined" || $scope.currentHawker == null) {
+				HawkerAppDS.setCurrentHawker(hawker);
 				HawkerAppDS.addToOrderList(item);
 			} else {
 				if($scope.currentHawker == hawker) {
@@ -57,6 +58,9 @@
 				price += parseFloat($scope.orderData[i].price.substring(2));
 			}
 			$scope.totalCost = 'S$' + price.toFixed(2);
+		});
+		$scope.$on('currentHawkerSet', function() {
+			$scope.currentHawker = HawkerAppDS.currentHawker;
 		});
 
 		$scope.removeFromOrder = function(item) {
