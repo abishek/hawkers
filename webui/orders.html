@@ -36,7 +36,7 @@
     		</div>
     		<div class="form-group">
     			<label for="customerHP" class="col-md-offset-1 col-md-5">Phone :</label>
-    			<input ng-model="customerHP" type="text" ng-pattern="/^[0-9]{1,8}$/" required placeholder="99991111">
+    			<input ng-model="customerHP" type="text" ng-pattern="/^[0-9]{1,8}$/" ng-minlength="8" ng-maxlength="8" required placeholder="99991111">
     		</div>
     		<button class="btn btn-default col-md-offset-2 col-md-7" ng-disabled="!custDetailsForm.$valid">Confirm Order</button>
     	</form>
