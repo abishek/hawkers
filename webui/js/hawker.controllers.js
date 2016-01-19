@@ -74,6 +74,7 @@
 			postData['email'] = $scope.customerEmail;
 			postData['HP'] = $scope.customerHP;
 			postData['totalCost'] = $scope.totalCost;
+			postData['currentHawker'] = $scope.currentHawker;
 			// send this data to flask
 			$http.post('http://localhost:5000/order/place', postData )
 			.success(function() {
@@ -83,6 +84,7 @@
 				$scope.customerEmail = '';
 				$scope.customerName = '';
 				$scope.totalCost = 'S$0.00';
+				HawkerAppDS.setCurrentHawker(null);
 				HawkerAppDS.updateOrderList($scope.orderData);
 			})
 			.error(function() {

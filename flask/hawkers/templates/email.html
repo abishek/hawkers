@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Order Placed!</title>
+	</head>
+	<body>
+		<h3>Order Placed Successfully.</h3>
+		<table>
+			<tr>
+				<td>Name</td>
+				<td>{{name}}</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>{{phone}}</td>
+			</tr>
+			<tr>
+				<td>Hawker Stall</td>
+				<td>{{hawkerName}}</td>
+			</tr>
+		</table>
+
+		<table>
+			{% for item in items %}
+			<tr>
+				<td>{{item.name}}</td>
+				<td>{{item.price}}</td>
+			</tr>
+			{% endfor %}
+			<tr>
+				<td>Total Cost</td>
+				<td>{{totalCost}}</td>
+			</tr>
+		</table>
+	</body>
+</html>

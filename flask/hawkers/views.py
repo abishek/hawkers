@@ -1,4 +1,4 @@
-from flask import request, json, jsonify
+from flask import request, json, jsonify, render_template
 from flask.ext.mail import Mail, Message
 from hawkers import app
 import googlemaps
@@ -85,9 +85,11 @@ def get_hawkers_by_pincode(pincode) :
 @app.route('/order/place', methods=['POST'])
 def place_order() :
 	print "processing order data"
-	msg = Message('Order placed %s'%str(datetime.now()), sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com'])
-	msg.html = str(request.get_json())
-	mail.send(msg)
+	jsondata = request.get_json()
+	msg = Message('Order placed %s'%str(datetime.now()), sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com', jsondata['email']])
+	msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], hawkerName=jsondata['currentHawker']['name'], totalCost=jsondata['totalCost'], items=jsondata['orderData'])
+	#mail.send(msg)
+	print msg.html
 	return 'Success';
 
 @app.route('/mail/test')
