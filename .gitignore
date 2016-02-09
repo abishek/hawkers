@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+flask/settings.cfg
+flask/hawkers/hawkers.db
+flask/hawkers/schema_mysql.sql
+flask/hawkers/settings.cfg
