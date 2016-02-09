@@ -21,6 +21,7 @@ class MenuType(db.Model) :
 	
 	id = db.Column(db.Integer, primary_key=True)
 	type = db.Column(db.String(50))
+	menus = db.relationship('Menu', backref='menu_type', lazy='dynamic')
 	
 	def __repr__(self) :
 		return self.type
@@ -32,7 +33,8 @@ class Menu(db.Model) :
 	name = db.Column(db.String(50))
 	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-		
+	foods = db.relationship('Food', backref='menu')
+	
 	def __repr__(self) :
 		return self.name
 
