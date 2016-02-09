@@ -11,7 +11,7 @@ class Hawker(db.Model) :
 	address = db.Column(db.String(150))
 	pincode = db.Column(db.Integer) 
 	contact_number = db.Column(db.Integer, unique=True)
-	menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
+	menus = db.relationship('Menu')
 	
 	def __repr__(self) :
 		return '%s, %s - %d'%(self.name, self.address, self.pincode)
@@ -21,7 +21,6 @@ class MenuType(db.Model) :
 	
 	id = db.Column(db.Integer, primary_key=True)
 	type = db.Column(db.String(50))
-	menus = db.relationship('Menu', backref='menu_type', lazy='joined')
 	
 	def __repr__(self) :
 		return self.type
@@ -31,10 +30,9 @@ class Menu(db.Model) :
 	
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50))
-	type = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
-	hawker = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-	foods = db.relationship('Food', backref='menu', lazy='dynamic')
-	
+	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
+	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
+		
 	def __repr__(self) :
 		return self.name
 
@@ -47,6 +45,7 @@ class Food(db.Model) :
 	price = db.Column(db.Float)
 	is_available = db.Column(db.Boolean)
 	image = db.Column(db.String(100))
+	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
