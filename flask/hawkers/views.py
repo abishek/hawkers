@@ -1,10 +1,8 @@
 from flask import request, json, jsonify, render_template
 from flask.ext.mail import Mail, Message
-from hawkers import app, admin
+from hawkers import app
 import googlemaps
 from datetime import datetime
-from hawkers.models import *
-from flask_admin.contrib.sqla import ModelView
 
 client = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
@@ -56,10 +54,6 @@ test_data = {'hawkers': [{'name':'Hawker One',
 						  'image':'/hawkers/images/6.jpg'
 						  }]}]}
 
-admin.add_view(ModelView(Hawker, db.session))
-admin.add_view(ModelView(Menu, db.session))
-admin.add_view(ModelView(MenuType, db.session))
-admin.add_view(ModelView(Food, db.session))
 
 @app.route('/')
 @app.route('/index')
