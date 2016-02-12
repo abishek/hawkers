@@ -1,11 +1,15 @@
 from flask import request, json, jsonify, render_template
 from flask.ext.mail import Mail, Message
-from hawkers import app
+from hawkers import app, admin
 import googlemaps
 from datetime import datetime
+from hawkers.models import *
+from hawkers.admin_views import HawkerAdminModelView, init_login
 
 client = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
+# Initialize flask-login
+init_login(app)
 
 test_data = {'hawkers': [{'name':'Hawker One', 
 						  'address':'Block 1', 
@@ -99,3 +103,8 @@ def send_test_mail() :
 	msg.html = "This is a test email. I hope you can receive it."
 	mail.send(msg)
 	return "Email sent"	
+
+admin.add_view(HawkerAdminModelView(Hawker, db.session))
+admin.add_view(HawkerAdminModelView(Menu, db.session))
+admin.add_view(HawkerAdminModelView(MenuType, db.session))
+admin.add_view(HawkerAdminModelView(Food, db.session))

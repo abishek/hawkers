@@ -7,6 +7,6 @@ environ['THDP_SETTINGS'] = 'settings.cfg'
 
 app = Flask(__name__)
 app.config.from_envvar('THDP_SETTINGS')
-admin = Admin(app, name='hawkers', index_view=HawkerAdminIndexView() template_mode='bootstrap3')
+admin = Admin(app, name='hawkers', index_view=admin_views.HawkerAdminIndexView(), template_mode='bootstrap3')
 
 from hawkers import views
