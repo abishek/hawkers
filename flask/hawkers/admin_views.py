@@ -1,35 +1,33 @@
-# https://github.com/flask-admin/flask-admin/blob/master/examples/auth-flask-login/app.py
+# https://github.com/flask-admin/flask-admin/blob/master/examples/auth-flask-login
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView, expose, helpers
 import flask_login as login
 from flask import redirect, url_for, request
 from wtforms import form, fields, validators
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
-    login = fields.TextField(validators=[validators.required()])
-    password = fields.PasswordField(validators=[validators.required()])
+	login = fields.TextField(validators=[validators.required()])
+	password = fields.PasswordField(validators=[validators.required()])
 
-    def validate_login(self, field):
-        user = self.get_user()
-
-        if user is None:
-            raise validators.ValidationError('Invalid user')
-
-        # we're comparing the plaintext pw with the the hash from the db
-        if not check_password_hash(user.password, self.password.data):
-        # to compare plain text passwords use
-        # if user.password != self.password.data:
-            raise validators.ValidationError('Invalid password')
-
-    def get_user(self):
-        return db.session.query(User).filter_by(login=self.login.data).first()
-
-
+	def validate_login(self, field) :
+		user = self.get_user()
+		
+		if user is None:
+			raise validators.ValidationError('Invalid user')
+			
+		if not check_password_hash(user.password, self.password.data):
+			raise validators.ValidationError('Invalid password')
+			
+	def get_user(self):
+		# super ugly hack. learn some python first.
+		from hawkers.models import db, User
+		return db.session.query(User).filter_by(login=self.login.data).first()
 
 # Initialize flask-login
-def init_login(app):
+def init_login(app, db):
+	from hawkers.models import db, User
 	login_manager = login.LoginManager()
 	login_manager.init_app(app)
     
@@ -37,7 +35,6 @@ def init_login(app):
 	@login_manager.user_loader
 	def load_user(user_id):
 		return db.session.query(User).get(user_id)
-
 
 # Create customized model view class
 class HawkerAdminModelView(ModelView):
@@ -49,6 +46,7 @@ class HawkerAdminIndexView(AdminIndexView) :
 
 	@expose('/')
 	def index(self):
+		print dir(self)
 		if not login.current_user.is_authenticated:
 			return redirect(url_for('.login_view'))
 		return super(HawkerAdminIndexView, self).index()
@@ -72,4 +70,3 @@ class HawkerAdminIndexView(AdminIndexView) :
 		login.logout_user()
 		return redirect(url_for('.index'))
         
-

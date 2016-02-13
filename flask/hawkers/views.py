@@ -9,7 +9,7 @@ from hawkers.admin_views import HawkerAdminModelView, init_login
 client = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
 # Initialize flask-login
-init_login(app)
+init_login(app, db)
 
 test_data = {'hawkers': [{'name':'Hawker One', 
 						  'address':'Block 1', 
