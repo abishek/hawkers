@@ -1,12 +1,13 @@
 from flask import request, json, jsonify, render_template
 from flask.ext.mail import Mail, Message
 from hawkers import app, admin
-import googlemaps
 from datetime import datetime
 from hawkers.models import *
 from hawkers.admin_views import HawkerAdminModelView, init_login
+from helpers import get_distance
+import googlemaps
 
-client = googlemaps.Client(app.config['MATRIX_KEY'])
+gmaps = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
 # Initialize flask-login
 init_login(app, db)
@@ -64,24 +65,24 @@ test_data = {'hawkers': [{'name':'Hawker One',
 def index() :
   return "Start here!"
 
-@app.route('/distance', methods=['POST'])
-def distance() :
-	req_data = request.get_json()
-	pincode = req_data['pincode']
-	origin = '349282, Singapore'
+@app.route('/distance/<int:pincode>')
+def distance(pincode) :
+	origin = '349279, Singapore'
 	destination = '%s, Singapore'%pincode
-	distance_op = client.distance_matrix(origin, destination, mode="transit")
+	distance_op = gmaps.distance_matrix(origin, destination, mode="transit")
 	output = {}
 	if distance_op['status'] == 'OK' :
-		output = distance_op['rows'][0]['elements'][0]['distance']
-		output['status'] = distance_op['status']
-		return jsonify(output)
+		result = distance_op['rows'][0]['elements'][0]['distance']
+		if result['value'] > 1000 :
+			return "Sorry, we do not serve this locality yet."
+		else :
+			return "Hurray!! We serve your locality already!."
 	else :
-		output['status'] = distance_op['status']
-		return jsonify(output)
-
+		return "Some error occurred trying to fetch this information"
+			
 @app.route('/list/<int:pincode>')
 def get_hawkers_by_pincode(pincode) :
+	# Loop through all the hawkers in your list and see who all would serve this pincode
 	if pincode == 111111 :
 		return jsonify(test_data)
 	else :
