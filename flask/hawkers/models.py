@@ -48,10 +48,34 @@ class Food(db.Model) :
 	is_available = db.Column(db.Boolean)
 	image = db.Column(db.String(100))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
+	food = db.relationship('OrderItem', backref='food')
 	
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
 
+class Order(db.Model) :
+	'''Orders placed by a customer.'''
+	
+	# Order Specific Fields
+	id = db.Column(db.Integer, primary_key=True)
+	date_time = db.Column(db.DateTime)
+	# Customer Details
+	customer_name = db.Column(db.String(100))
+	customer_email = db.Column(db.String(100))
+	customer_phone = db.Column(db.Integer)
+	order = db.relationship('OrderItem', backref='order')
+	
+	def __repr__(self) :
+		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 
+						self.customer_phone, self.date_time)
+						
+class OrderItem(db.Model)
+	'''Food items in the order'''
+	
+	id = db.Column(db.Integer, primary_key=True)
+	order_id = db.Column(db.Integer, db.ForeignKey('order.id')
+	food_id = db.Column(db.Integer, db.ForeignKey('food.id')
+	
 # Admin Login Requires a user model. Maybe can be extended to all users later on
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
