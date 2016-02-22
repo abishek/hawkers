@@ -12,7 +12,8 @@ class Hawker(db.Model) :
 	pincode = db.Column(db.Integer) 
 	contact_number = db.Column(db.Integer, unique=True)
 	menus = db.relationship('Menu')
-	
+	pccache = db.relationship('PincodeCache', backref='hawker')
+		
 	def __repr__(self) :
 		return '%s, %s - %d'%(self.name, self.address, self.pincode)
 
@@ -52,6 +53,17 @@ class Food(db.Model) :
 	
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
+		
+class PincodeCache(db.Model) :
+	'''Cacheing by pincode to see which hawker accepts which codes. To reduce
+		troubling google maps for previosuly seen codes'''
+		
+	id = db.Column(db.Integer, primary_key=True)
+	pincode = db.Column(db.Integer)
+	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
+	
+	def __repr__(self) :
+		return 'Singapore, %d '%(self.pincode)
 
 class Order(db.Model) :
 	'''Orders placed by a customer.'''
