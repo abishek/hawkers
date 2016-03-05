@@ -4,19 +4,34 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
 class Hawker(db.Model) :
-	'''Basic table of hawkers. Each hawker has a menu of food items.'''
-	
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(30))
-	address = db.Column(db.String(150))
-	pincode = db.Column(db.Integer) 
-	contact_number = db.Column(db.Integer, unique=True)
-	menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
-	pccache = db.relationship('PincodeCache', backref='hawker')
-		
-	def __repr__(self) :
-		return '%s, %s - %d'%(self.name, self.address, self.pincode)
-
+    '''Basic table of hawkers. Each hawker has a menu of food items.'''
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    address = db.Column(db.String(150))
+    pincode = db.Column(db.Integer) 
+    contact_number = db.Column(db.Integer, unique=True)
+    menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
+    pccache = db.relationship('PincodeCache', backref='hawker')
+        
+    def get_map(self) :
+        food_list = []
+        menu = self.menus.first()
+        foods = menu.foods.all()
+        for food in foods :
+            food_list.append(food.get_map())
+            
+        return {
+                'name' : self.name,
+                'address' : self.address,
+                'pincode' : self.pincode,
+                'contact' : self.contact_number,
+                'menu' : food_list
+                }
+    
+    def __repr__(self) :
+        return '%s, %s - %d'%(self.name, self.address, self.pincode)
+        
 class MenuType(db.Model) :
 	"Type of cuisine. Mapping table."
 	
@@ -51,6 +66,14 @@ class Food(db.Model) :
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	food = db.relationship('OrderItem', backref='food', lazy='dynamic')
 	
+	def get_map(self) :
+	    return {
+	        'name' : self.name,
+	        'description' : self.description,
+	        'price' : 'S$%.02f'%self.price,
+	        'is_available': self.is_available,
+	        'image': self.image
+	    }
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
 		

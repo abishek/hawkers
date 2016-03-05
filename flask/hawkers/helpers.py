@@ -1,4 +1,4 @@
-def get_distance(maps, src_pincode, dst_pincode) :
+def get_distance(maps, origin, destination) :
 	'''Helper function to get google matrix distance.
 	Returns the distance or -1 if the call failed.'''
 	
