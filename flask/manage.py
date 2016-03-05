@@ -70,6 +70,7 @@ def populatedata() :
     
     # add menu for this hawker
     m = Menu()
+    m.name = 'Lunch Menu'
     m.hawker = h
     mt = MenuType.query.filter_by(type = 'Indian Muslim').first()
     m.menu_type = mt

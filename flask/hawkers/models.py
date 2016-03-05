@@ -34,7 +34,7 @@ class Menu(db.Model) :
 	name = db.Column(db.String(50))
 	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-	foods = db.relationship('Food', backref='menu', lazy='joined')
+	foods = db.relationship('Food', backref='menu', lazy='dynamic')
 	
 	def __repr__(self) :
 		return self.name
@@ -49,7 +49,7 @@ class Food(db.Model) :
 	is_available = db.Column(db.Boolean)
 	image = db.Column(db.String(100))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-	food = db.relationship('OrderItem', backref='food')
+	food = db.relationship('OrderItem', backref='food', lazy='dynamic')
 	
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
