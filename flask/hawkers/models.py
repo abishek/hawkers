@@ -11,7 +11,7 @@ class Hawker(db.Model) :
 	address = db.Column(db.String(150))
 	pincode = db.Column(db.Integer) 
 	contact_number = db.Column(db.Integer, unique=True)
-	menus = db.relationship('Menu')
+	menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
 	pccache = db.relationship('PincodeCache', backref='hawker')
 		
 	def __repr__(self) :
@@ -34,7 +34,7 @@ class Menu(db.Model) :
 	name = db.Column(db.String(50))
 	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-	foods = db.relationship('Food', backref='menu')
+	foods = db.relationship('Food', backref='menu', lazy='joined')
 	
 	def __repr__(self) :
 		return self.name
@@ -81,12 +81,15 @@ class Order(db.Model) :
 		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 
 						self.customer_phone, self.date_time)
 						
-class OrderItem(db.Model)
+class OrderItem(db.Model):
 	'''Food items in the order'''
 	
 	id = db.Column(db.Integer, primary_key=True)
-	order_id = db.Column(db.Integer, db.ForeignKey('order.id')
-	food_id = db.Column(db.Integer, db.ForeignKey('food.id')
+	order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+	food_id = db.Column(db.Integer, db.ForeignKey('food.id'))
+	
+	def __repr__(self) :
+	    return '%d '%self.id
 	
 # Admin Login Requires a user model. Maybe can be extended to all users later on
 class User(db.Model):

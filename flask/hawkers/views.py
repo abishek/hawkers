@@ -111,15 +111,21 @@ def get_hawkers_by_pincode(pincode) :
 def place_order() :
 	print "processing order data"
 	jsondata = request.get_json()
-	msg = Message('Order placed %s'%str(datetime.now()), sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com', jsondata['email']])
-	msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], hawkerName=jsondata['currentHawker']['name'], totalCost=jsondata['totalCost'], items=jsondata['orderData'])
+	msg = Message('Order placed %s'%str(datetime.now()), 
+					sender=app.config['DEFAULT_MAIL_SENDER'], 
+					recipients=['goda.abishek@gmail.com', jsondata['email']])
+	msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], 
+										hawkerName=jsondata['currentHawker']['name'], 
+										totalCost=jsondata['totalCost'], 
+										items=jsondata['orderData'])
 	#mail.send(msg)
 	print msg.html
 	return 'Success';
 
 @app.route('/mail/test')
 def send_test_mail() :
-	msg = Message('test email from hawker app', sender=app.config['DEFAULT_MAIL_SENDER'], recipients=['goda.abishek@gmail.com'])
+	msg = Message('test email from hawker app', sender=app.config['DEFAULT_MAIL_SENDER'], 
+												recipients=['goda.abishek@gmail.com'])
 	msg.html = "This is a test email. I hope you can receive it."
 	mail.send(msg)
 	return "Email sent"	
