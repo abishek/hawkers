@@ -71,7 +71,7 @@ class Food(db.Model) :
 	        'name' : self.name,
 	        'description' : self.description,
 	        'price' : 'S$%.02f'%self.price,
-	        'is_available': self.is_available,
+	        'isAvailable': 'True' if self.is_available else 'False',
 	        'image': self.image
 	    }
 	def __repr__(self) :
