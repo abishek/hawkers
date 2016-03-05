@@ -48,13 +48,8 @@ def populatecuisines() :
     soups.type = 'Soup'
     western = MenuType()
     western.type = 'Western'
-    db.session.add(thai)
-    db.session.add(indmus)
-    db.session.add(chinese)
-    db.session.add(veg)
-    db.session.add(noodles)
-    db.session.add(soups)
-    db.session.add(western)
+    
+    db.session.add_all([thai, indmus, chinese, veg, noodles, soups, western])
     db.session.commit()
  	
 @manager.command
