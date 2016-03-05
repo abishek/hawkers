@@ -114,18 +114,36 @@ def get_hawkers_by_pincode(pincode) :
 
 @app.route('/order/place', methods=['POST'])
 def place_order() :
-	print "processing order data"
-	jsondata = request.get_json()
-	msg = Message('Order placed %s'%str(datetime.now()), 
-					sender=app.config['DEFAULT_MAIL_SENDER'], 
-					recipients=['goda.abishek@gmail.com', jsondata['email']])
-	msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], 
-										hawkerName=jsondata['currentHawker']['name'], 
-										totalCost=jsondata['totalCost'], 
-										items=jsondata['orderData'])
-	#mail.send(msg)
-	print msg.html
-	return 'Success';
+    jsondata = request.get_json()
+    dt = datetime.utcnow()
+    o = Order()
+    o.date_time = dt
+    o.customer_name = jsondata['name']
+    o.customer_email = jsondata['email']
+    o.customer_phone = jsondata['HP']
+    o.hawker = Hawker.query.get(jsondata['currentHawker']['vid'])
+    o.menu = Menu.query.get(jsondata['currentHawker']['mid'])
+    db.session.add(o)
+    
+    for item in jsondata['orderData'] :
+        f = Food.query.get(item['fid'])
+        oi = OrderItem()
+        oi.food = f
+        oi.order = o
+        db.session.add(oi)
+        
+    db.session.commit()   
+        
+    msg = Message('Order placed %s'%str(dt), 
+                    sender=app.config['DEFAULT_MAIL_SENDER'], 
+                    recipients=['goda.abishek@gmail.com', jsondata['email']])
+    msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], 
+                                        hawkerName=jsondata['currentHawker']['name'], 
+                                        totalCost=jsondata['totalCost'], 
+                                        items=jsondata['orderData'])
+    #mail.send(msg)
+    print msg.html
+    return 'Success'
 
 @app.route('/mail/test')
 def send_test_mail() :

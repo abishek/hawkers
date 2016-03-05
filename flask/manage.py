@@ -11,6 +11,7 @@ manager.add_command("shell", Shell())
 @manager.command
 def createdb():
     from hawkers.models import db
+    db.drop_all()
     db.create_all()
 
 @manager.command

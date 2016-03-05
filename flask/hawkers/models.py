@@ -12,6 +12,7 @@ class Hawker(db.Model) :
     pincode = db.Column(db.Integer) 
     contact_number = db.Column(db.Integer, unique=True)
     menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
+    order = db.relationship('Order', backref='hawker', lazy='dynamic')
     pccache = db.relationship('PincodeCache', backref='hawker')
         
     def get_map(self) :
@@ -22,10 +23,12 @@ class Hawker(db.Model) :
             food_list.append(food.get_map())
             
         return {
+                'vid' : self.id,
                 'name' : self.name,
                 'address' : self.address,
                 'pincode' : self.pincode,
                 'contact' : self.contact_number,
+                'mid' : menu.id,
                 'menu' : food_list
                 }
     
@@ -50,7 +53,8 @@ class Menu(db.Model) :
 	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	foods = db.relationship('Food', backref='menu', lazy='dynamic')
-	
+	order = db.relationship('Order', backref='menu', lazy='dynamic')
+	    
 	def __repr__(self) :
 		return self.name
 
@@ -68,6 +72,7 @@ class Food(db.Model) :
 	
 	def get_map(self) :
 	    return {
+	        'fid' : self.id,
 	        'name' : self.name,
 	        'description' : self.description,
 	        'price' : 'S$%.02f'%self.price,
@@ -99,6 +104,8 @@ class Order(db.Model) :
 	customer_email = db.Column(db.String(100))
 	customer_phone = db.Column(db.Integer)
 	order = db.relationship('OrderItem', backref='order')
+	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
+	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	
 	def __repr__(self) :
 		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 
