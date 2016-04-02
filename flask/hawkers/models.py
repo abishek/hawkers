@@ -7,9 +7,9 @@ class Hawker(db.Model) :
     '''Basic table of hawkers. Each hawker has a menu of food items.'''
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    address = db.Column(db.String(150))
-    pincode = db.Column(db.Integer) 
+    name = db.Column(db.String(30), nullable=False)
+    address = db.Column(db.String(150), nullable=False)
+    pincode = db.Column(db.Integer, nullable=False) 
     contact_number = db.Column(db.Integer, unique=True)
     menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
     order = db.relationship('Order', backref='hawker', lazy='dynamic')
@@ -39,7 +39,7 @@ class MenuType(db.Model) :
 	"Type of cuisine. Mapping table."
 	
 	id = db.Column(db.Integer, primary_key=True)
-	type = db.Column(db.String(50))
+	type = db.Column(db.String(50), nullable=False)
 	menus = db.relationship('Menu', backref='menu_type', lazy='dynamic')
 	
 	def __repr__(self) :
@@ -49,7 +49,7 @@ class Menu(db.Model) :
 	'''Menu published by a hawker. Aggregate of food items.'''
 	
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
+	name = db.Column(db.String(50), nullable=False)
 	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	foods = db.relationship('Food', backref='menu', lazy='dynamic')
@@ -62,10 +62,10 @@ class Food(db.Model) :
 	'''Actual food listing. Each food belongs in a menu.'''
 	
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
+	name = db.Column(db.String(50), nullable=False)
 	description = db.Column(db.String(200))
-	price = db.Column(db.Float)
-	is_available = db.Column(db.Boolean)
+	price = db.Column(db.Float, nullable=False)
+	is_available = db.Column(db.Boolean, default=False)
 	image = db.Column(db.String(100))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	food = db.relationship('OrderItem', backref='food', lazy='dynamic')
@@ -87,7 +87,7 @@ class PincodeCache(db.Model) :
 		troubling google maps for previosuly seen codes'''
 		
 	id = db.Column(db.Integer, primary_key=True)
-	pincode = db.Column(db.Integer)
+	pincode = db.Column(db.Integer, nullable=False)
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	
 	def __repr__(self) :
@@ -100,9 +100,9 @@ class Order(db.Model) :
 	id = db.Column(db.Integer, primary_key=True)
 	date_time = db.Column(db.DateTime)
 	# Customer Details
-	customer_name = db.Column(db.String(100))
-	customer_email = db.Column(db.String(100))
-	customer_phone = db.Column(db.Integer)
+	customer_name = db.Column(db.String(100), nullable=False)
+	customer_email = db.Column(db.String(100), nullable=False)
+	customer_phone = db.Column(db.Integer, nullable=False)
 	order = db.relationship('OrderItem', backref='order')
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
