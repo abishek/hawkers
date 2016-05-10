@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{{ super() }}
+<div class="container">
+<div class="row-fluid">
+
+	<div class="jumbotron">
+  		<h1 class="text-center">The Hawker Delivery Project</h1>
+  		<p/>
+  		<p class="text-right"><small>Vendor Console</small></p>
+	</div>
+  
+    <table class="table table-hover">
+        <tr><td><a href="/vendors/stall">Manage Stalls</a></td></tr>
+        <tr><td><a href="/vendors/food">Manage Food Items</a></td></tr>
+        <tr><td><a href="/vendors/menu">Manage Menu</a></td></tr>
+        <tr><td><a href="/vendors/time">Manage Cut Off Times</a></td></tr>
+        <tr><td><a href="/vendors/order">Manage Orders</a></td></tr>
+    </table>
+</div>
+</div>
+{% endblock body %}
