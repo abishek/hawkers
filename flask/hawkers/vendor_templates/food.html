@@ -46,6 +46,11 @@
         {% endif %}
         </table>
         </li>
+        <li class="list-group-item">
+        {% if id %}
+        <a href="{{ url_for('vendor_page.add_food', stallid=id) }}">Add Food</a>
+        {% endif %}
+        </li>
     </ul>
 </div>
 </div>

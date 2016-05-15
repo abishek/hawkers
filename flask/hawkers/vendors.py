@@ -5,9 +5,18 @@ from flask_login import login_required
 from hawkers.models import User, Hawker, CutOffTime, Food, db
 from wtforms import form, fields, validators, ValidationError
 from wtforms_components import TimeField
+import re, os
+from werkzeug import secure_filename
+from PIL import Image
 
 vendor_page = Blueprint('vendor_page', __name__, template_folder='vendor_templates')
+UPLOADED_FILES_DEST = '/Users/rohabini/Documents/Entrepreneurship/Singam/Hawker Project/source_code/hawkers/webui/images/'
 
+
+def allowed_file(filename) :
+    return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
+   
+   
 # Forms
 class StallForm(form.Form) :
     name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=100)])
@@ -26,13 +35,14 @@ class StallForm(form.Form) :
     
 class FoodForm(form.Form):
 	name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=50)])
-	description = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=200)])
+	description = fields.TextAreaField('Description', [validators.InputRequired(), validators.Length(max=200)])
 	price = fields.DecimalField('Price', [validators.InputRequired(),])
 	is_available = fields.BooleanField('Available?', [])
-	image = fields.FileField(u'Image File', [validators.InputRequired(), ])
+	image = fields.FileField(u'Image File', [validators.InputRequired(),])
 	
 	def validate_image(form, field) :
-	    print field.data
+	    if field.data:
+	        field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
 	    
 class TimeForm(form.Form) :
     cutofftime = TimeField('Cut Off Time', [validators.InputRequired(),])
@@ -147,6 +157,35 @@ def manage_food() :
         
     return render_template('food.html', stalls=stalls, foods=foods, id=stallid)
 
+@vendor_page.route('/food/<int:stallid>/add', methods=['POST', 'GET'])
+def add_food(stallid) :
+    food_form = FoodForm(request.form)
+    stall = Hawker.query.get(stallid)
+     
+    if request.method == 'POST' and food_form.validate() :
+        food = Food()
+        food.name = food_form.name.data
+        food.description = food_form.description.data
+        food.price = food_form.price.data
+        food.is_available = food_form.is_available.data
+        food.hawker_id = stallid
+        image_file = request.files['image']
+        food.image = secure_filename(image_file.filename)
+
+        if image_file and allowed_file(image_file.filename) :
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
+            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((20, 20), Image.ANTIALIAS)
+            name,ext = filename.rsplit('.', 1)
+            thumb_filename = '%s_thumb.%s'%(name, ext)
+            thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))
+
+        db.session.add(food)
+        db.session.commit()
+        
+        return redirect(url_for('vendor_page.index'))
+    return render_template('addfood.html', form=food_form, stall=stall)
+    
 @vendor_page.route('/food/<int:foodid>/delete')
 def delete_food(foodid) :
     food = Food.query.get(foodid)
@@ -158,17 +197,34 @@ def delete_food(foodid) :
 def edit_food(foodid) :
     food_form = FoodForm(request.form)
     food = Food.query.get(foodid)
-    food_form.name = food.name
-    food_form.description = food.description
-    food_form.price = food.price
-    food_form.is_available = food.is_available
+    food_form.name.data = food.name
+    food_form.description.data = food.description
+    food_form.price.data = food.price
+    food_form.is_available.data = food.is_available
+    food_form.image.data = food.image
+    stall = Hawker.query.get(food.hawker_id)
     
     if request.method == 'POST' and food_form.validate() :
-        print food_form.name.data
-        print food_form.description.data
-        print food_form.price.data
+        food.name = food_form.name.data
+        food.description = food_form.description.data
+        food.price = food_form.price.data
+        food.is_available = food_form.is_available.data
+        food.hawker_id = stallid
+        image_file = request.files['image']
+        food.image = secure_filename(image_file.filename)
+        if image_file and allowed_file(image_file.filename) :
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
+            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((20, 20), Image.ANTIALIAS)
+            name,ext = filename.rsplit('.', 1)
+            thumb_filename = '%s_thumb.%s'%(name, ext)
+            thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))
 
-    return render_template('editfood.html', form=food_form)
+        db.session.commit()        
+
+        return redirect(url_for('vendor_page.index'))
+        
+    return render_template('editfood.html', form=food_form, food=food, stall=stall)
     
 # Manage Cut Off Times
 @vendor_page.route('/time')
