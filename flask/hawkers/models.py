@@ -53,6 +53,7 @@ class Food(db.Model) :
 	price = db.Column(db.Float, nullable=False)
 	is_available = db.Column(db.Boolean, default=False)
 	image = db.Column(db.Unicode(128))
+	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	
 	def get_map(self) :
 	    return {

@@ -26,39 +26,34 @@ def populateadmin() :
 	admin_user.login = 'admin'
 	admin_user.email = 'webmaster@rohabini.com'
 	admin_user.password = generate_password_hash(app.config['ADMIN_PASSWORD'])
+	admin_user.hawker = None
+	admin_user.is_admin = True
 	db.session.add(admin_user)
 	db.session.commit()
 	
 @manager.command
-def populatecuisines() :
-    from hawkers.models import db, MenuType
-    print MenuType.query.delete(), " rows deleted from MenuType"
+def populatevendor() :
+    populateadmin()
+    from hawkers.models import db, User
     
-	# add cuisines
-    thai = MenuType()
-    thai.type = 'Thai'
-    indmus = MenuType()
-    indmus.type = 'Indian Muslim'
-    chinese = MenuType()
-    chinese.type = 'Chinese'
-    veg = MenuType()
-    veg.type = 'Vegetarian'
-    noodles = MenuType()
-    noodles.type = 'Noodles'
-    soups = MenuType()
-    soups.type = 'Soup'
-    western = MenuType()
-    western.type = 'Western'
-    
-    db.session.add_all([thai, indmus, chinese, veg, noodles, soups, western])
+    # add a vendor user
+    vendor_user = User()
+    vendor_user.first_name = 'Test'
+    vendor_user.last_name = 'Vendor'
+    vendor_user.login = 'vndr'
+    vendor_user.email = 'webmaster@rohabini.com'
+    vendor_user.password = generate_password_hash('vndrP')
+    vendor_user.hawker = None
+    vendor_user.is_admin = False
+    db.session.add(vendor_user)
     db.session.commit()
- 	
+    
 @manager.command
 def populatedata() :
-    from hawkers.models import db, Hawker, Menu, MenuType, Food
+    from hawkers.models import db, Hawker, Food, User
+    populatevendor()
     # Empty the tables first
     print Hawker.query.delete(), " rows deleted from Hawker"
-    print Menu.query.delete(), " rows deleted from Menu"
     print Food.query.delete(), " rows deleted from Food"
     
 	# add hawker
@@ -67,15 +62,9 @@ def populatedata() :
     h.address = 'Golden Palace Eating House, 5 Kallang Sector, Singapore'
     h.pincode = 349279
     h.contact_number = 99991111
+    h.owner = User.query.filter_by(login='vndr').first().id
     db.session.add(h)
-    
-    # add menu for this hawker
-    m = Menu()
-    m.name = 'Lunch Menu'
-    m.hawker = h
-    mt = MenuType.query.filter_by(type = 'Indian Muslim').first()
-    m.menu_type = mt
-    db.session.add(m)
+    db.session.commit()
     
     # add foods for this menu
     f1 = Food()
@@ -83,24 +72,21 @@ def populatedata() :
     f1.description = 'North Indian Side dish for Rice and Roti'
     f1.price = 1.00
     f1.is_available = True
-    f1.image = '/hawkers/images/1.jpg'
-    f1.menu = m
+    f1.hawker_id = h.id
 
     f2 = Food()
     f2.name = 'South Indian Lunch'
     f2.description = 'Complete Platter with variety rice and side dish'
     f2.price = 3.20
     f2.is_available = False
-    f2.image = '/hawkers/images/2.jpg'
-    f2.menu = m
+    f2.hawker_id = h.id
 
     f3 = Food()
     f3.name = 'Brussels Sprouts'
     f3.description = 'Indian Style garnished with mustard'
     f3.is_available = True
     f3.price = 1.00
-    f3.image = '/hawkers/images/3.jpg'
-    f3.menu = m
+    f3.hawker_id = h.id
 
     db.session.add_all([f1, f2, f3])
     db.session.commit()

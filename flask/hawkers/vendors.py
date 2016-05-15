@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, g, request, session
 from flask import flash, redirect, url_for
 from jinja2 import TemplateNotFound  
 from flask_login import login_required
-from hawkers.models import User, Hawker, CutOffTime, db
+from hawkers.models import User, Hawker, CutOffTime, Food, db
 from wtforms import form, fields, validators, ValidationError
 from wtforms_components import TimeField
 
@@ -24,7 +24,7 @@ class StallForm(form.Form) :
         if len(str(field.data)) != 8 :
             raise ValidationError('Contact number must be 8 digits.')
     
-class ManageFoodForm(form.Form):
+class FoodForm(form.Form):
 	name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=50)])
 	description = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=200)])
 	price = fields.DecimalField('Price', [validators.InputRequired(),])
@@ -130,10 +130,46 @@ def delete_stall(id):
     db.session.commit()
     return redirect(url_for('vendor_page.index'))
     
-@vendor_page.route('/food')
+# Manage Food Items
+@vendor_page.route('/food/', methods=['POST', 'GET'])
 def manage_food() :
-    return render_template('food.html')
+    stalls = None
+    foods = None
+    stallid = None
+    if g.user.is_admin :
+        stalls = Hawker.query.all()
+    else :
+        stalls = Hawker.query.filter_by(owner=g.user.id).all()
+        
+    if request.method == 'POST' :
+        stallid = request.form['stallId']
+        foods = Food.query.filter_by(hawker_id=stallid).all() #pretty bad code?
+        
+    return render_template('food.html', stalls=stalls, foods=foods, id=stallid)
 
+@vendor_page.route('/food/<int:foodid>/delete')
+def delete_food(foodid) :
+    food = Food.query.get(foodid)
+    db.session.delete(food)
+    db.session.commit()
+    return redirect(url_for('vendor_page.index'))
+
+@vendor_page.route('/food/<int:foodid>/edit', methods=['POST', 'GET'])
+def edit_food(foodid) :
+    food_form = FoodForm(request.form)
+    food = Food.query.get(foodid)
+    food_form.name = food.name
+    food_form.description = food.description
+    food_form.price = food.price
+    food_form.is_available = food.is_available
+    
+    if request.method == 'POST' and food_form.validate() :
+        print food_form.name.data
+        print food_form.description.data
+        print food_form.price.data
+
+    return render_template('editfood.html', form=food_form)
+    
 # Manage Cut Off Times
 @vendor_page.route('/time')
 def manage_timings() :
