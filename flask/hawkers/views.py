@@ -1,64 +1,20 @@
-from flask import request, json, jsonify, render_template
-from flask.ext.mail import Mail, Message
-from hawkers import app, admin
 from datetime import datetime
-from hawkers.models import *
-from hawkers.admin_views import HawkerAdminModelView, init_login
-from helpers import get_distance
+import os
+
+from flask import request, json, jsonify, render_template, send_from_directory
+from flask.ext.mail import Mail, Message
+
 import googlemaps
+
+from hawkers import app
+from hawkers.models import *
+from hawkers.admin_views import HawkerAdminModelView, ImageAdminView
+from helpers import get_distance
 
 gmaps = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
-# Initialize flask-login
-init_login(app, db)
 
-test_data = {'hawkers': [{'name':'Hawker One', 
-						  'address':'Block 1', 
-						  'pincode':'111111', 
-						  'contact':'99991111',
-						  'menu':[{
-						  'name':'Mix Veg Curry',
-						  'description':'North Indian Side dish for Rice and Roti',
-						  'price': 'S$1.00',
-						  'isAvailable':'True',
-						  'image':'/hawkers/images/1.jpg'
-						  }, {
-						  'name':'South Indian Lunch',
-						  'description':'Complete Platter with variety rice and side dish',
-						  'price': 'S$3.20',
-						  'isAvailable':'False',
-						  'image':'/hawkers/images/2.jpg'
-						  }, {
-						  'name':'Brussels Sprouts',
-						  'description':'Indian Style garnished with mustard',
-						  'price': 'S$1.00',
-						  'isAvailable':'True',
-						  'image':'/hawkers/images/3.jpg'
-						  }]}, 
-						 {'name':'Hawker Two', 
-						  'address':'Block 2', 
-						  'pincode':'222222', 
-						  'contact':'99992222',
-						  'menu':[{
-						  'name':'Idli Vada Combo',
-						  'description':'Authentic South Indian Breakfast Combo',
-						  'price': 'S$2.00',
-						  'isAvailable':'True',
-						  'image':'/hawkers/images/4.jpg'
-						  }, {
-						  'name':'Kadai Paneer',
-						  'description':'North Indian side dish for Rotis and Pratas',
-						  'price': 'S$2.20',
-						  'isAvailable':'True',
-						  'image':'/hawkers/images/5.jpg'
-						  }, {
-						  'name':'Indian Milk Sweets',
-						  'description':'Milk and Cashew sweets to saitate the sweet tooth.',
-						  'price': 'S$1.50',
-						  'isAvailable':'True',
-						  'image':'/hawkers/images/6.jpg'
-						  }]}]}
-
+# Actual App
 @app.route('/')
 @app.route('/index')
 def index() :
@@ -153,10 +109,12 @@ def send_test_mail() :
 	mail.send(msg)
 	return "Email sent"	
 
-admin.add_view(HawkerAdminModelView(Hawker, db.session))
-admin.add_view(HawkerAdminModelView(Menu, db.session))
-admin.add_view(HawkerAdminModelView(MenuType, db.session))
-admin.add_view(HawkerAdminModelView(Food, db.session))
-admin.add_view(HawkerAdminModelView(PincodeCache, db.session))
-admin.add_view(HawkerAdminModelView(Order, db.session))
-admin.add_view(HawkerAdminModelView(OrderItem, db.session))
+#admin.add_view(HawkerAdminModelView(Hawker, db.session))
+#admin.add_view(HawkerAdminModelView(Menu, db.session))
+#admin.add_view(HawkerAdminModelView(MenuType, db.session))
+#admin.add_view(ImageAdminView(Image, db.session))
+#admin.add_view(HawkerAdminModelView(Food, db.session))
+#admin.add_view(HawkerAdminModelView(PincodeCache, db.session))
+#admin.add_view(HawkerAdminModelView(Order, db.session))
+#admin.add_view(HawkerAdminModelView(OrderItem, db.session))
+

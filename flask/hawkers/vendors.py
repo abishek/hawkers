@@ -29,13 +29,13 @@ class ManageFoodForm(form.Form):
 	description = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=200)])
 	price = fields.DecimalField('Price', [validators.InputRequired(),])
 	is_available = fields.BooleanField('Available?', [])
-	image = fields.FileField(u'Image File', [validators.regexp(u'^[^/\\]\.jpg$')])
+	image = fields.FileField(u'Image File', [validators.InputRequired(), ])
 	
+	def validate_image(form, field) :
+	    print field.data
+	    
 class TimeForm(form.Form) :
     cutofftime = TimeField('Cut Off Time', [validators.InputRequired(),])
-
-class ManageMenuForm(form.Form) :
-    name = fields.TextField('Menu Name', [validators.InputRequired(), validators.Length(max=50)])
     
 class ManageOrderForm(form.Form) :
     pass
@@ -129,36 +129,11 @@ def delete_stall(id):
     db.session.delete(stall)
     db.session.commit()
     return redirect(url_for('vendor_page.index'))
-
-# Manage Menus
-@vendor_page.route('/menu')
-def manage_menu() :
-    # get a list of hawkers for this user. If admin, get all hawkers
-    stalls = None
-    if g.user.is_admin :
-        stalls = Hawker.query.all()
-    else :
-        stalls = Hawker.query.filter_by(owner=g.user.id).all()
-    for stall in stalls :
-        stall.user = g.user
-        active_menu = ActiveMenu.query.get(stall.id)
-        if active_menu :
-            stall.actmenu = active_menu.name
-        else :
-            stall.actmenu = '-'
-
-    return render_template('menu.html', stalls=stalls)
-
-
+    
 @vendor_page.route('/food')
 def manage_food() :
     return render_template('food.html')
-    
 
-@vendor_page.route('/menu/<int:id>/edit')
-def edit_menu(id) :
-    pass
-    
 # Manage Cut Off Times
 @vendor_page.route('/time')
 def manage_timings() :

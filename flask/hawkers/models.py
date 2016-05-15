@@ -1,7 +1,9 @@
-from hawkers import app
 from flask_sqlalchemy import SQLAlchemy
+from admin_views import file_path
+from sqlalchemy.event import listens_for
+from flask_login import UserMixin
 
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 class Hawker(db.Model) :
     '''Basic table of hawkers. Each hawker has a menu of food items.'''
@@ -11,14 +13,13 @@ class Hawker(db.Model) :
     address = db.Column(db.String(150), nullable=False)
     pincode = db.Column(db.Integer, nullable=False) 
     contact_number = db.Column(db.Integer, unique=True)
-    menus = db.relationship('Menu', backref='hawker', lazy='dynamic')
     order = db.relationship('Order', backref='hawker', lazy='dynamic')
     pccache = db.relationship('PincodeCache', backref='hawker')
-        
+    owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
     def get_map(self) :
         food_list = []
-        menu = self.menus.first()
-        foods = menu.foods.all()
+        foods = []
         for food in foods :
             food_list.append(food.get_map())
             
@@ -28,36 +29,21 @@ class Hawker(db.Model) :
                 'address' : self.address,
                 'pincode' : self.pincode,
                 'contact' : self.contact_number,
-                'mid' : menu.id,
                 'menu' : food_list
                 }
     
     def __repr__(self) :
         return '%s, %s - %d'%(self.name, self.address, self.pincode)
         
-class MenuType(db.Model) :
-	"Type of cuisine. Mapping table."
-	
-	id = db.Column(db.Integer, primary_key=True)
-	type = db.Column(db.String(50), nullable=False)
-	menus = db.relationship('Menu', backref='menu_type', lazy='dynamic')
-	
-	def __repr__(self) :
-		return self.type
+class CutOffTime(db.Model) :
+    '''Cut Off Time until when the hawker accepts orders.'''
+    
+    hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'), primary_key=True)
+    cut_off_time = db.Column(db.Time, nullable=False)
+    
+    def __repr__(self):
+        return self.cut_off_time
 	 
-class Menu(db.Model) :
-	'''Menu published by a hawker. Aggregate of food items.'''
-	
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50), nullable=False)
-	menu_type_id = db.Column(db.Integer, db.ForeignKey('menu_type.id'))
-	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-	foods = db.relationship('Food', backref='menu', lazy='dynamic')
-	order = db.relationship('Order', backref='menu', lazy='dynamic')
-	    
-	def __repr__(self) :
-		return self.name
-
 class Food(db.Model) :
 	'''Actual food listing. Each food belongs in a menu.'''
 	
@@ -66,9 +52,7 @@ class Food(db.Model) :
 	description = db.Column(db.String(200))
 	price = db.Column(db.Float, nullable=False)
 	is_available = db.Column(db.Boolean, default=False)
-	image = db.Column(db.String(100))
-	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-	food = db.relationship('OrderItem', backref='food', lazy='dynamic')
+	image = db.Column(db.Unicode(128))
 	
 	def get_map(self) :
 	    return {
@@ -77,11 +61,10 @@ class Food(db.Model) :
 	        'description' : self.description,
 	        'price' : 'S$%.02f'%self.price,
 	        'isAvailable': 'True' if self.is_available else 'False',
-	        'image': self.image
 	    }
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)
-		
+    
 class PincodeCache(db.Model) :
 	'''Cacheing by pincode to see which hawker accepts which codes. To reduce
 		troubling google maps for previosuly seen codes'''
@@ -105,7 +88,6 @@ class Order(db.Model) :
 	customer_phone = db.Column(db.Integer, nullable=False)
 	order = db.relationship('OrderItem', backref='order')
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
-	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	
 	def __repr__(self) :
 		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 
@@ -129,7 +111,11 @@ class User(db.Model):
     login = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120))
     password = db.Column(db.String(64))
+    is_admin = db.Column(db.Boolean, default=False)
 
+    def __repr__(self) :
+        return '%s, %s'%(self.last_name, self.first_name)
+        
     # Flask-Login integration
     def is_authenticated(self):
         return True
@@ -142,7 +128,7 @@ class User(db.Model):
 
     def get_id(self):
         return self.id
-
+        
     # Required for administrative interface
     def __unicode__(self):
-        return self.username	
+        return self.login
