@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{{ super() }}
+<div class="container">
+<div class="row-fluid">
+
+	<div class="jumbotron">
+  		<h1 class="text-center">The Hawker Delivery Project</h1>
+  		<p/>
+  		<p class="text-right"><small>Vendor Console</small></p>
+	</div>
+  
+    <ul class="list-group">
+        <li class="list-group-item"> 
+            <table class="table table-striped">
+                <tr>
+                <th>Owner</th>
+                <th>Name</th>
+                <th>Pin Code</th>
+                <th>Contact Number</th>
+                <th>Address</th>
+                </tr>
+                {% for stall in stalls %}
+                <tr>  
+                <td>{{ stall.user.login }}</td>
+                <td>{{ stall.name }}</td>
+                <td>{{ stall.pincode }}</td>
+                <td>{{ stall.contact_number }}</td>
+                <td>{{ stall.address }} </td>
+                <td> <a href="{{ url_for('vendor_page.modify_stall', id=stall.id) }}">Modify</a> </td>
+                <td> <a href="{{ url_for('vendor_page.delete_stall', id=stall.id) }}">Delete</a> </td>
+                </tr>        
+                {% endfor %}
+            </table>
+        </li>
+        <li class="list-group-item">
+            <a href="{{ url_for('vendor_page.add_stall') }}">Add Stall</a>
+        </li>
+    </ul>
+</div>
+</div>
+{% endblock body %}

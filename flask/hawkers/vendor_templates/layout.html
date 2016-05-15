@@ -33,6 +33,7 @@
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
+  {% from "_formhelpers.html" import render_field %}
   {% block body %}{% endblock %}
 </div>
 </body>

@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{{ super() }}
+<div class="container">
+<div class="row-fluid">
+
+	<div class="jumbotron">
+  		<h1 class="text-center">The Hawker Delivery Project</h1>
+  		<p/>
+  		<p class="text-right"><small>Vendor Console</small></p>
+	</div>
+  
+    <ul class="list-group">
+        <li class="list-group-item"> 
+            <table class="table table-striped">
+                <tr>
+                <th>Owner</th>
+                <th>Stall</th>
+                <th>Pin Code</th>
+                <th>Active Menu</th>
+                </tr>
+                {% for stall in stalls %}
+                <tr>  
+                <td>{{ stall.user.login }}</td>
+                <td>{{ stall.name }}</td>
+                <td>{{ stall.pincode }}</td>
+                <td>{{ stall.actmenu }}</td>
+                <td> <a href="{{ url_for('vendor_page.edit_menu', stall_id=stall.id) }}">Modify</a> </td>
+                </tr>        
+                {% endfor %}
+            </table>
+        </li>
+    </ul>
+</div>
+</div>
+{% endblock body %}
