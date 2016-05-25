@@ -10,8 +10,14 @@ from werkzeug import secure_filename
 from PIL import Image
 
 vendor_page = Blueprint('vendor_page', __name__, template_folder='vendor_templates')
-UPLOADED_FILES_DEST = '/Users/rohabini/Documents/Entrepreneurship/Singam/Hawker Project/source_code/hawkers/flask/hawkers/static_files/images/'
 
+# Manage Configurations
+vendor_page.config = {}
+@vendor_page.record
+def record_app_settings(setup_state) :
+    app = setup_state.app
+    vendor_page.config = dict([(key, value) for (key, value) in app.config.iteritems()])
+    
 def allowed_file(filename) :
     return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
    
@@ -178,11 +184,11 @@ def add_food(stallid) :
 
         if image_file and allowed_file(image_file.filename) :
             filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
-            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((40, 40), Image.ANTIALIAS)
+            image_file.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], filename))            
+            thumb = Image.open(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], filename)).resize((40, 40), Image.ANTIALIAS)
             name,ext = filename.rsplit('.', 1)
             thumb_filename = '%s_thumb.%s'%(name, ext)
-            thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))
+            thumb.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], thumb_filename))
 
         db.session.add(food)
         db.session.commit()
@@ -223,11 +229,11 @@ def edit_food(foodid) :
         food.image = secure_filename(image_file.filename)
         if image_file and allowed_file(image_file.filename) :
             filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
-            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((40, 40), Image.ANTIALIAS)
+            image_file.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], filename))            
+            thumb = Image.open(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], filename)).resize((40, 40), Image.ANTIALIAS)
             name,ext = filename.rsplit('.', 1)
             thumb_filename = '%s_thumb.%s'%(name, ext)
-            thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))
+            thumb.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], thumb_filename))
 
         db.session.commit()        
 
