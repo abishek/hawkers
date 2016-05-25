@@ -10,12 +10,10 @@ from werkzeug import secure_filename
 from PIL import Image
 
 vendor_page = Blueprint('vendor_page', __name__, template_folder='vendor_templates')
-UPLOADED_FILES_DEST = '/Users/rohabini/Documents/Entrepreneurship/Singam/Hawker Project/source_code/hawkers/webui/images/'
-
+UPLOADED_FILES_DEST = '/Users/rohabini/Documents/Entrepreneurship/Singam/Hawker Project/source_code/hawkers/flask/hawkers/static_files/images/'
 
 def allowed_file(filename) :
     return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
-   
    
 # Forms
 class StallForm(form.Form) :
@@ -38,7 +36,7 @@ class FoodForm(form.Form):
 	description = fields.TextAreaField('Description', [validators.InputRequired(), validators.Length(max=200)])
 	price = fields.DecimalField('Price', [validators.InputRequired(),])
 	is_available = fields.BooleanField('Available?', [])
-	image = fields.FileField(u'Image File', [validators.InputRequired(),])
+	image = fields.FileField(u'Image File', [])
 	
 	def validate_image(form, field) :
 	    if field.data:
@@ -154,6 +152,12 @@ def manage_food() :
     if request.method == 'POST' :
         stallid = request.form['stallId']
         foods = Food.query.filter_by(hawker_id=stallid).all() #pretty bad code?
+        for food in foods:
+            if food.image in ('', None):
+                food.thumb = None
+            else :
+                name, ext = food.image.rsplit('.', 1)
+                food.thumb = '%s_thumb.%s'%(name, ext)
         
     return render_template('food.html', stalls=stalls, foods=foods, id=stallid)
 
@@ -175,7 +179,7 @@ def add_food(stallid) :
         if image_file and allowed_file(image_file.filename) :
             filename = secure_filename(image_file.filename)
             image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
-            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((20, 20), Image.ANTIALIAS)
+            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((40, 40), Image.ANTIALIAS)
             name,ext = filename.rsplit('.', 1)
             thumb_filename = '%s_thumb.%s'%(name, ext)
             thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))
@@ -202,20 +206,25 @@ def edit_food(foodid) :
     food_form.price.data = food.price
     food_form.is_available.data = food.is_available
     food_form.image.data = food.image
+    food_form.image_present = (food.image not in ('', None))
     stall = Hawker.query.get(food.hawker_id)
+    if food_form.image_present:
+        print food.image.strip()
+        name, ext = food.image.rsplit('.', 1)
+        food_form.image_thumb = '%s_thumb.%s'%(name, ext)
     
     if request.method == 'POST' and food_form.validate() :
         food.name = food_form.name.data
         food.description = food_form.description.data
         food.price = food_form.price.data
         food.is_available = food_form.is_available.data
-        food.hawker_id = stallid
+        food.hawker_id = stall.id
         image_file = request.files['image']
         food.image = secure_filename(image_file.filename)
         if image_file and allowed_file(image_file.filename) :
             filename = secure_filename(image_file.filename)
             image_file.save(os.path.join(UPLOADED_FILES_DEST, filename))            
-            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((20, 20), Image.ANTIALIAS)
+            thumb = Image.open(os.path.join(UPLOADED_FILES_DEST, filename)).resize((40, 40), Image.ANTIALIAS)
             name,ext = filename.rsplit('.', 1)
             thumb_filename = '%s_thumb.%s'%(name, ext)
             thumb.save(os.path.join(UPLOADED_FILES_DEST, thumb_filename))

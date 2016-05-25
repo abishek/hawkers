@@ -31,6 +31,7 @@
             <th>Description</th>
             <th>Price</th>
             <th>Available</th>
+            <th>Image</th>
         </tr>
         {% if foods %}
         {% for food in foods %}
@@ -39,6 +40,11 @@
             <td>{{ food.description }}</td>
             <td>{{ food.price }}</td>
             <td>{{ food.is_available }}</td>
+            {% if food.thumb %}
+            <td><img src="/static/images/{{food.thumb}}" class="img-thumbnail"> </td>
+            {% else %}
+            <td><img src="#" alt="No Image" class="img-thumbnail"></td>
+            {% endif %}
             <td><a href="{{ url_for('vendor_page.edit_food', foodid=food.id)}}">Edit</a></td>
             <td><a href="{{ url_for('vendor_page.delete_food', foodid=food.id)}}">Delete</a></td>
         </tr>
