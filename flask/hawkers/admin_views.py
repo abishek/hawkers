@@ -1,72 +1,47 @@
 # https://github.com/flask-admin/flask-admin/blob/master/examples/auth-flask-login
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView, expose, helpers
-import flask_login as login
 from flask import redirect, url_for, request
-from wtforms import form, fields, validators
-from werkzeug.security import check_password_hash
+from flask_admin import form as admin_form
+from jinja2 import Markup
+from flask_sqlalchemy import SQLAlchemy
 
-# Define login and registration forms (for flask-login)
-class LoginForm(form.Form):
-	login = fields.TextField(validators=[validators.required()])
-	password = fields.PasswordField(validators=[validators.required()])
-
-	def validate_login(self, field) :
-		user = self.get_user()
-		
-		if user is None:
-			raise validators.ValidationError('Invalid user')
-			
-		if not check_password_hash(user.password, self.password.data):
-			raise validators.ValidationError('Invalid password')
-			
-	def get_user(self):
-		# super ugly hack. learn some python first.
-		from hawkers.models import db, User
-		return db.session.query(User).filter_by(login=self.login.data).first()
-
-# Initialize flask-login
-def init_login(app, db):
-	from hawkers.models import db, User
-	login_manager = login.LoginManager()
-	login_manager.init_app(app)
     
-	# Create user loader function
-	@login_manager.user_loader
-	def load_user(user_id):
-		return db.session.query(User).get(user_id)
+file_path = 'hawkers/images'
+try:
+    import os
+    os.mkdir(file_path)
+except OSError:
+    pass
 
 # Create customized model view class
 class HawkerAdminModelView(ModelView):
 
     def is_accessible(self):
-        return login.current_user.is_authenticated
-        
-class HawkerAdminIndexView(AdminIndexView) :
+        # accessible if the user is authenticated and he is called admin
+        return login.current_user.is_authenticated and login.current_user.is_admin
 
-	@expose('/')
-	def index(self):
-		print dir(self)
-		if not login.current_user.is_authenticated:
-			return redirect(url_for('.login_view'))
-		return super(HawkerAdminIndexView, self).index()
-	
-	@expose('/login/', methods=('GET', 'POST'))
-	def login_view(self):
-		# handle user login
-		form = LoginForm(request.form)
-		if helpers.validate_form_on_submit(form):
-			user = form.get_user()
-			login.login_user(user)
 
-		if login.current_user.is_authenticated:
-			return redirect(url_for('.index'))
+#https://github.com/flask-admin/flask-admin/blob/master/examples/forms/app.py
+class ImageAdminView(HawkerAdminModelView):
+
+    def _list_thumbnail(view, context, model, name):
+        if not model.path:
+            return ''
+
+        return Markup('<img src="%s">' % url_for('static',
+                                                 filename=admin_form.thumbgen_filename(model.path)))
+
+    column_formatters = {
+        'path': _list_thumbnail
+    }
+
+    # Alternative way to contribute field is to override it completely.
+    # In this case, Flask-Admin won't attempt to merge various parameters for the field.
+    form_extra_fields = {
+        'path': admin_form.ImageUploadField('Image',
+                                      base_path=file_path,
+                                      thumbnail_size=(100, 100, True))
+    }
 		
-		self._template_args['form'] = form
-		return super(HawkerAdminIndexView, self).index()
-
-	@expose('/logout/')
-	def logout_view(self):
-		login.logout_user()
-		return redirect(url_for('.index'))
         
