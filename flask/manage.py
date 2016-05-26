@@ -68,10 +68,11 @@ def populatedata() :
     
     # add foods for this menu
     f1 = Food()
-    f1.name = 'Mix Veg Curry'
-    f1.description = 'North Indian Side dish for Rice and Roti'
+    f1.name = 'Dosa'
+    f1.description = 'Indian style lentil pancakes'
     f1.price = 1.00
     f1.is_available = True
+    f1.image = 'dosa.jpg'
     f1.hawker_id = h.id
 
     f2 = Food()
@@ -79,13 +80,15 @@ def populatedata() :
     f2.description = 'Complete Platter with variety rice and side dish'
     f2.price = 3.20
     f2.is_available = False
+    f2.image = '2.jpg'
     f2.hawker_id = h.id
 
     f3 = Food()
-    f3.name = 'Brussels Sprouts'
-    f3.description = 'Indian Style garnished with mustard'
+    f3.name = 'Idli'
+    f3.description = 'Indian Style steamed rice cakes'
     f3.is_available = True
     f3.price = 1.00
+    f3.image = 'idli.jpg'
     f3.hawker_id = h.id
 
     db.session.add_all([f1, f2, f3])

@@ -87,8 +87,10 @@ class Order(db.Model) :
 	customer_name = db.Column(db.String(100), nullable=False)
 	customer_email = db.Column(db.String(100), nullable=False)
 	customer_phone = db.Column(db.Integer, nullable=False)
-	order = db.relationship('OrderItem', backref='order')
+	customer_pincode = db.Column(db.Integer, nullable=False)
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
+	# Order State
+	accepted = db.Column(db.Boolean, default=False)
 	
 	def __repr__(self) :
 		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 
