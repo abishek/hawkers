@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, g, request, session
 from flask import flash, redirect, url_for
 from jinja2 import TemplateNotFound  
 from flask_login import login_required
-from hawkers.models import User, Hawker, CutOffTime, Food, db
+from hawkers.models import User, Hawker, CutOffTime, Food, Order, db
 from wtforms import form, fields, validators, ValidationError
 from wtforms_components import TimeField
 import re, os
@@ -51,9 +51,6 @@ class FoodForm(form.Form):
 class TimeForm(form.Form) :
     cutofftime = TimeField('Cut Off Time', [validators.InputRequired(),])
     
-class ManageOrderForm(form.Form) :
-    pass
-
 # Routes
 @vendor_page.route('/')
 @login_required
@@ -281,10 +278,34 @@ def modify_time(stall_id):
         time_form.cutofftime.data = cot.cut_off_time
     return render_template('edittime.html', form=time_form, id=stall_id)
 
-@vendor_page.route('/order')
+@vendor_page.route('/order',  methods=['POST', 'GET'])
 def manage_orders() :
-    return render_template('order.html')
+    stalls = None
+    orders = None
+    stallid = None
+    if g.user.is_admin :
+        stalls = Hawker.query.all()
+    else :
+        stalls = Hawker.query.filter_by(owner=g.user.id).all()
+        
+    if request.method == 'POST' :
+        stallid = request.form['stallId']
+        orders = Order.query.filter_by(hawker_id=stallid).all() #pretty bad code?
+        
+    return render_template('order.html', stalls=stalls, orders=orders, id=stallid)
 
+@vendor_page.route('/order/<int:orderid>/accept')
+def accept_order(orderid) :
+    pass
+
+@vendor_page.route('/order/<int:orderid>/reject')
+def reject_order(orderid) :
+    pass
+    
+@vendor_page.route('/order/<int:orderid>/details')
+def order_details(orderid) :
+    pass
+    
 @vendor_page.before_request
 @login_required
 def validate_user():
