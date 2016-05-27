@@ -36,7 +36,7 @@
             </div>
             {% if form.image_present %}
             <div class="form-group">
-                <image src="/static/images/{{ form.image_thumb }}" alt="{{ form.image.data }}"></image>
+                <image src="{{ url_for('static', filename='images/%s'%form.image_thumb) }}" alt="{{ form.image.data }}"></image>
             </div>
             {% endif %}
             <div class="form-group">

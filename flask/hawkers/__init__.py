@@ -7,12 +7,12 @@ from hawkers.auth import login, init_login
 
 environ['THDP_SETTINGS'] = 'settings.cfg'
 
-app = Flask(__name__, static_folder='static_files', static_url_path='/static')
+app = Flask(__name__, static_folder='static_files', static_url_path='/web')
 app.config.from_envvar('THDP_SETTINGS')
 #admin = Admin(app, name='hawkers', index_view=admin_views.HawkerAdminIndexView(), template_mode='bootstrap3')
 
 # Register the modules
-app.register_blueprint(login)
+app.register_blueprint(login, url_prefix='/auth')
 app.register_blueprint(vendor_page, url_prefix='/vendors')
 
 from hawkers import views

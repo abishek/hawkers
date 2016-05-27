@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 
-from flask import request, json, jsonify, render_template, send_from_directory
+from flask import request, json, jsonify, render_template, send_from_directory, redirect
 from flask.ext.mail import Mail, Message
 
 import googlemaps
@@ -15,10 +15,10 @@ gmaps = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
 
 # Actual App
-@app.route('/')
 @app.route('/index')
-def index() :
-  return "Start here!"
+@app.route('/')
+def goto_webapp() :
+    return redirect('/web/index.html')
 
 @app.route('/distance/<int:pincode>')
 def distance(pincode) :
