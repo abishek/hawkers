@@ -53,8 +53,8 @@ def populatedata() :
     from hawkers.models import db, Hawker, Food, User
     populatevendor()
     # Empty the tables first
-    print Hawker.query.delete(), " rows deleted from Hawker"
-    print Food.query.delete(), " rows deleted from Food"
+    print(Hawker.query.delete(), " rows deleted from Hawker")
+    print(Food.query.delete(), " rows deleted from Food")
     
 	# add hawker
     h = Hawker()
