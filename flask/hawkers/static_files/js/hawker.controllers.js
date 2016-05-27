@@ -5,7 +5,7 @@
 		$scope.locateHawkers = function() {
 			console.log($scope.pincode);
 			// submit this pincode and get a list of hawkers as result.
-			$http.get('http://localhost:5000/list/'+$scope.pincode)
+			$http.get('/app/list/'+$scope.pincode)
 			.success(function(data) {
 				// populate this data into the list group below
 				HawkerAppDS.updateHawkerList(data.hawkers);
@@ -76,7 +76,7 @@
 			postData['totalCost'] = $scope.totalCost;
 			postData['currentHawker'] = $scope.currentHawker;
 			// send this data to flask
-			$http.post('http://localhost:5000/order/place', postData )
+			$http.post('/app/order/place', postData )
 			.success(function() {
 				$scope.orderEmptyMessage = "Order Placed";
 				$scope.orderData = [];

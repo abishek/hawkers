@@ -13,21 +13,6 @@ $.postJSON = function(url, data, callback) {
     });
 };
 
-var getDistance = function(destPincode) {
-	$.ajax({
-		type: 'POST',
-		url: 'http://localhost:5000/distance',
-		data: JSON.stringify({'pincode': destPincode}),
-		dataType: 'json',
-		contentType: 'application/json; charset=utf-8'
-	}).done(function(msg) {
-		console.log(msg['status']);
-		console.log(msg['text']);
-		console.log(msg['value']);
-	});
-	return "0";
-}
-
 var submitpin = function(event) {
 	var $pincode = $.trim($("#basic-pincode").val());
 	if($pincode.length == 0) {
