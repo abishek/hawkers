@@ -1,0 +1,8 @@
+flask
+flask-admin
+flask-login
+flask-sqlalchemy
+wtforms-components
+pillow
+flask-mail
+googlemaps

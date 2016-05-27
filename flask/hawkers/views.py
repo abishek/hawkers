@@ -9,11 +9,21 @@ import googlemaps
 from hawkers import app
 from hawkers.models import *
 from hawkers.admin_views import HawkerAdminModelView, ImageAdminView
-from helpers import get_distance
 
 gmaps = googlemaps.Client(app.config['MATRIX_KEY'])
 mail = Mail(app)
 
+def get_distance(maps, origin, destination) :
+	'''Helper function to get google matrix distance.
+	Returns the distance or -1 if the call failed.'''
+	
+	distance_op = maps.distance_matrix(origin, destination, mode="transit")
+	if distance_op['status'] == 'OK' :
+		result = distance_op['rows'][0]['elements'][0]['distance']
+		return result['value']
+	else :
+		return -1
+		
 # Actual App
 @app.route('/index')
 @app.route('/')
@@ -98,23 +108,7 @@ def place_order() :
                                         totalCost=jsondata['totalCost'], 
                                         items=jsondata['orderData'])
     #mail.send(msg)
-    print msg.html
+    print(msg.html)
     return 'Success'
 
-@app.route('/mail/test')
-def send_test_mail() :
-	msg = Message('test email from hawker app', sender=app.config['DEFAULT_MAIL_SENDER'], 
-												recipients=['goda.abishek@gmail.com'])
-	msg.html = "This is a test email. I hope you can receive it."
-	mail.send(msg)
-	return "Email sent"	
-
-#admin.add_view(HawkerAdminModelView(Hawker, db.session))
-#admin.add_view(HawkerAdminModelView(Menu, db.session))
-#admin.add_view(HawkerAdminModelView(MenuType, db.session))
-#admin.add_view(ImageAdminView(Image, db.session))
-#admin.add_view(HawkerAdminModelView(Food, db.session))
-#admin.add_view(HawkerAdminModelView(PincodeCache, db.session))
-#admin.add_view(HawkerAdminModelView(Order, db.session))
-#admin.add_view(HawkerAdminModelView(OrderItem, db.session))
 

@@ -75,7 +75,7 @@
 			postData['HP'] = $scope.customerHP;
 			postData['totalCost'] = $scope.totalCost;
 			postData['currentHawker'] = $scope.currentHawker;
-			// send this data to flask
+			// send this data to flask`1                    2   
 			$http.post('/app/order/place', postData )
 			.success(function() {
 				$scope.orderEmptyMessage = "Order Placed";

@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from admin_views import file_path
 from sqlalchemy.event import listens_for
 from flask_login import UserMixin
 

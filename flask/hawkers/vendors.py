@@ -16,7 +16,7 @@ vendor_page.config = {}
 @vendor_page.record
 def record_app_settings(setup_state) :
     app = setup_state.app
-    vendor_page.config = dict([(key, value) for (key, value) in app.config.iteritems()])
+    vendor_page.config = dict([(key, value) for (key, value) in app.config.items()])
     
 def allowed_file(filename) :
     return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
@@ -212,7 +212,6 @@ def edit_food(foodid) :
     food_form.image_present = (food.image not in ('', None))
     stall = Hawker.query.get(food.hawker_id)
     if food_form.image_present:
-        print food.image.strip()
         name, ext = food.image.rsplit('.', 1)
         food_form.image_thumb = '%s_thumb.%s'%(name, ext)
     

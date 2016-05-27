@@ -47,7 +47,7 @@ def loginaction() :
 	    user = form.get_user()
 	    if flask_login.login_user(user) :
 	        session['user'] = user.login
-            return redirect(request.args.get('next') or url_for('vendor_page.index'))
+	        return redirect(request.args.get('next') or url_for('vendor_page.index'))
 	        
 	return render_template('login.html', form=form)
 
