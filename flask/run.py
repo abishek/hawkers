@@ -1,2 +1,5 @@
+from socket import gethostname
 from hawkers import app
-app.run(debug=True, use_reloader=True)
+
+if 'liveconsole' not in gethostname() :
+    app.run(debug=True, use_reloader=True)
