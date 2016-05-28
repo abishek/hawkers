@@ -1,31 +1,26 @@
-
-{% block access_control %}
-{% if current_user.is_authenticated %}
-<div class="btn-group pull-right">
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        <i class="icon-user"></i> {{ current_user.login }} <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
-        <li><a href="{{ url_for('login.logoutaction') }}">Log out</a></li>
-    </ul>
-</div>
-{% endif %}
-{% endblock %}
-
+{% extends 'layout.html' %}
 
 {% block body %}
-
+{{ super() }}
+<div class="container">
 <div class="row-fluid">
 
-    <div>
+	
+	<div class="jumbotron">
+  		<h1 class="text-center">The Hawker Delivery Project</h1>
+  		<p/>
+  		<p class="text-right"><small>Vendor Console - Authentication</small></p>
+	</div>
+	
+      <ul class="list-group">
+        <li class="list-group-item"> 
         {% if current_user.is_authenticated %}
-        <h1>Database Administration Page</h1>
-        <p class="lead">
-            Authentication
-        </p>
+        <div class="panel panel-default">
         <p>
-These page allows you to add or remove data from the database directly.
+            You may now goto the vendor or admin access pages depending on your access rights.
+            <a href="{{url_for('vendor_page.index')}}">Vendor Console Access</a>
         </p>
+        </div>
         {% else %}
         <form method="POST" action="">
             {{ form.hidden_tag() if form.hidden_tag }}
@@ -46,7 +41,9 @@ These page allows you to add or remove data from the database directly.
         </form>
         {{ link | safe }}
         {% endif %}
+        </li>
+        </ul>
+    </div>
     </div>
 
-</div>
 {% endblock body %}
