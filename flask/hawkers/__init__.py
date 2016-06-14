@@ -20,3 +20,4 @@ from hawkers.models import db
 
 init_login(app, db)
 db.init_app(app)
+

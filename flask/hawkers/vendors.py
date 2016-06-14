@@ -20,8 +20,8 @@ def record_app_settings(setup_state) :
     
 def allowed_file(filename) :
     return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
-   
-# Forms
+	
+# Forms		
 class StallForm(form.Form) :
     name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=100)])
     address = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=500)])
