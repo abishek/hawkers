@@ -19,7 +19,8 @@ def record_app_settings(setup_state) :
     vendor_page.config = dict([(key, value) for (key, value) in app.config.items()])
     
 def allowed_file(filename) :
-    return '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
+    ret = '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
+    return ret
 	
 # Forms		
 class StallForm(form.Form) :
@@ -214,7 +215,6 @@ def edit_food(foodid) :
     if food_form.image_present:
         name, ext = food.image.rsplit('.', 1)
         food_form.image_thumb = '%s_thumb.%s'%(name, ext)
-    
     if request.method == 'POST' and food_form.validate() :
         food.name = food_form.name.data
         food.description = food_form.description.data
@@ -222,7 +222,6 @@ def edit_food(foodid) :
         food.is_available = food_form.is_available.data
         food.hawker_id = stall.id
         image_file = request.files['image']
-        food.image = secure_filename(image_file.filename)
         if image_file and allowed_file(image_file.filename) :
             filename = secure_filename(image_file.filename)
             image_file.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], filename))            
@@ -230,6 +229,7 @@ def edit_food(foodid) :
             name,ext = filename.rsplit('.', 1)
             thumb_filename = '%s_thumb.%s'%(name, ext)
             thumb.save(os.path.join(vendor_page.config['UPLOADED_FILES_DEST'], thumb_filename))
+            food.image = secure_filename(image_file.filename)
 
         db.session.commit()        
 
