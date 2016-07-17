@@ -13,7 +13,7 @@
   
     <ul class="list-group">
         <li class="list-group-item"> 
-            <form method="post" action="/vendors/stall/add">
+            <form method="post" action="{{ url_for('vendor_page.modify_stall', id=stallid) }}" >
             <div class="form-group">
                 {{ render_field(form.name) }}
             </div>

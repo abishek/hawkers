@@ -106,7 +106,7 @@ def add_stall() :
         
     return render_template('addstall.html', form=stall_form)
     
-@vendor_page.route('/stall/<int:id>/modify')
+@vendor_page.route('/stall/<int:id>/modify', methods=['POST', 'GET'])
 def modify_stall(id) :
     stall_form = StallForm(request.form)
     users = None
@@ -132,7 +132,7 @@ def modify_stall(id) :
         stall_form.pincode.data = stall.pincode
         stall_form.contact_number.data = stall.contact_number
         
-    return render_template('editstall.html', form=stall_form)
+    return render_template('editstall.html', form=stall_form, stallid=stall.id)
     
 @vendor_page.route('/stall/<int:id>/delete')
 def delete_stall(id):
