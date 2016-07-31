@@ -31,7 +31,7 @@ class StallForm(form.Form) :
     owner = fields.SelectField('Owner', coerce=int)
     
     def validate_pincode(form, field) :
-        if len(str(field.data)) != 6 :
+        if len(str(field.data)) not in (5,6) :
             raise ValidationError('Pincode must be 6 digits.')
             
     def validate_contact_number(form, field) :
