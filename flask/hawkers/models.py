@@ -18,10 +18,10 @@ class Hawker(db.Model) :
     
     def get_map(self) :
         food_list = []
-        foods = []
+        foods = Food.query.filter_by(hawker_id=self.id)
         for food in foods :
             food_list.append(food.get_map())
-            
+ 
         return {
                 'vid' : self.id,
                 'name' : self.name,
@@ -61,6 +61,8 @@ class Food(db.Model) :
 	        'description' : self.description,
 	        'price' : 'S$%.02f'%self.price,
 	        'isAvailable': 'True' if self.is_available else 'False',
+            'thumb': 'images/%s_thumb.jpg'%self.image[:-4],
+            'image': 'images/%s'%self.image
 	    }
 	def __repr__(self) :
 		return '%s :: %s'%(self.name, self.description)

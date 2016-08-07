@@ -1,9 +1,9 @@
 ( function() {
-	var app = angular.module("hawkerAppControllers", [ "hawkerAppDS"]);
+	var app = angular.module("hawkerAppControllers", ["hawkerAppDS", "ui.bootstrap.modal"]);
 
 	app.controller("PincodeController", ['$http', "$scope", 'HawkerAppDS', function($http, $scope, HawkerAppDS) {
 		$scope.locateHawkers = function() {
-			console.log($scope.pincode);
+			HawkerAppDS.setPincode($scope.pincode);
 			// submit this pincode and get a list of hawkers as result.
 			$http.get('/list/'+$scope.pincode)
 			.success(function(data) {
@@ -20,6 +20,8 @@
 
 	app.controller("HawkerListController", ['$scope', '$http', 'HawkerAppDS', function($scope, $http, HawkerAppDS) {
 		$scope.hawkerList = [];
+		$scope.showModal = false;
+
 		$scope.hawkerListMessage = "There are no hawkers to show. Please search by pincode.";
 
 		$scope.$on('messageUpdated', function() {
@@ -32,6 +34,15 @@
 			$scope.currentHawker = HawkerAppDS.currentHawker;
 		});
 
+		$scope.open = function(itm) {
+			$scope.image = itm.image;
+			$scope.showModal = true;
+		};
+
+		$scope.close = function() {
+			$scope.showModal = false;
+		};
+		
 		$scope.addToOrder = function(hawker, item) {
 			if(typeof $scope.currentHawker == "undefined" || $scope.currentHawker == null) {
 				HawkerAppDS.setCurrentHawker(hawker);
@@ -63,6 +74,10 @@
 			$scope.currentHawker = HawkerAppDS.currentHawker;
 		});
 
+		$scope.$on('pincodeSet', function() {
+			$scope.pincode = HawkerAppDS.pincode;
+		});
+
 		$scope.removeFromOrder = function(item) {
 			HawkerAppDS.removeFromOrderList(item);
 		};
@@ -75,6 +90,9 @@
 			postData['HP'] = $scope.customerHP;
 			postData['totalCost'] = $scope.totalCost;
 			postData['currentHawker'] = $scope.currentHawker;
+			postData['pincode'] = $scope.pincode;
+			console.log(postData);
+
 			// send this data to flask`1                    2   
 			$http.post('/order/place', postData )
 			.success(function() {

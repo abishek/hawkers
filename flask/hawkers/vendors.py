@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, g, request, session
 from flask import flash, redirect, url_for
 from jinja2 import TemplateNotFound  
 from flask_login import login_required
-from hawkers.models import User, Hawker, CutOffTime, Food, Order, db
+from hawkers.models import User, Hawker, CutOffTime, Food, Order, OrderItem, db
 from wtforms import form, fields, validators, ValidationError
 from wtforms_components import TimeField
 import re, os
@@ -282,6 +282,7 @@ def manage_orders() :
     stalls = None
     orders = None
     stallid = None
+    foods = None
     if g.user.is_admin :
         stalls = Hawker.query.all()
     else :
@@ -290,8 +291,14 @@ def manage_orders() :
     if request.method == 'POST' :
         stallid = request.form['stallId']
         orders = Order.query.filter_by(hawker_id=stallid).all() #pretty bad code?
-        
-    return render_template('order.html', stalls=stalls, orders=orders, id=stallid)
+        foods = {}
+        for order in orders :
+            orderitems = OrderItem.query.filter_by(order_id=order.id)
+            foods[order.id] = []
+            for orderitem in orderitems :
+                foods[order.id].append(Food.query.get(orderitem.food_id))
+
+    return render_template('order.html', stalls=stalls, orders=orders, foods=foods, id=stallid)
 
 @vendor_page.route('/order/<int:orderid>/accept')
 def accept_order(orderid) :
@@ -303,7 +310,12 @@ def reject_order(orderid) :
     
 @vendor_page.route('/order/<int:orderid>/details')
 def order_details(orderid) :
-    pass
+    orderItems = OrderItem.query.filter_by(order_id=orderid)
+    foodItems = []
+    for orderItem in orderItems :
+        food = Food.query.get(id=orderItem.food_id)
+        foodItems.append(food)
+    return render_template('orderdetail.html', foods=foodItems)
     
 @vendor_page.before_request
 @login_required

@@ -5,6 +5,12 @@ angular.module("hawkerAppDS", []).factory('HawkerAppDS', function($rootScope) {
 	service.hawkerList = [];
 	service.orderList = [];
 	service.currentHawker = null;
+	service.pincode = null;
+
+	service.setPincode = function(pincode) {
+		this.pincode = pincode;
+		$rootScope.$broadcast("pincodeSet");
+	}
 
 	service.setCurrentHawker = function(hawker) {
 		this.currentHawker = hawker;
@@ -28,6 +34,7 @@ angular.module("hawkerAppDS", []).factory('HawkerAppDS', function($rootScope) {
 
 	service.addToOrderList = function(item) {
 		this.orderList.push(item);
+		console.log(item);
 		$rootScope.$broadcast("orderListUpdated");
 	}
 

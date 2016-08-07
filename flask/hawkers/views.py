@@ -87,15 +87,16 @@ def place_order() :
     o.customer_name = jsondata['name']
     o.customer_email = jsondata['email']
     o.customer_phone = jsondata['HP']
+    o.customer_pincode = jsondata['pincode']
     o.hawker = Hawker.query.get(jsondata['currentHawker']['vid'])
-    o.menu = Menu.query.get(jsondata['currentHawker']['mid'])
     db.session.add(o)
+    db.session.commit()
     
     for item in jsondata['orderData'] :
         f = Food.query.get(item['fid'])
         oi = OrderItem()
-        oi.food = f
-        oi.order = o
+        oi.food_id = item['fid']
+        oi.order = o.id
         db.session.add(oi)
         
     db.session.commit()   

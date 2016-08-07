@@ -4,7 +4,6 @@
 {{ super() }}
 <div class="container">
 <div class="row-fluid">
-
 	<div class="jumbotron">
   		<h1 class="text-center">The Hawker Delivery Project</h1>
   		<p/>
@@ -25,6 +24,7 @@
         </form>
         </li>
         <li class="list-group-item">
+
         <table class="table table-striped">
         <tr>
             <th>Date/Time</th>
@@ -44,9 +44,24 @@
             <td>{{ order.customer_email }}</td>
             <td>{{ order.customer_phone }}</td>
             <td>{{ order.customer_pincode }}</td>
-            <td><a href="{{ url_forl('vendor_page.order_details', orderid=order.id)}}">Details</a></td>
+
+            <td><a data-toggle="collapse" href="#collapseDetails{{order.id}}" aria-expanded="false" aria-controls="collapseDetails{{order.id}}">Details</a>
+            <div class="collapse" id="collapseDetails{{order.id}}">
+                <div class="well">
+                    <ul class="list-group">
+                        {% for food in foods[order.id] %}
+                        <li class='list-group-item'>{{ food.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            </td>
+            {% if order.accepted %}
+            <td colspan=2> Accepted </td>
+            {% else %}
             <td><a href="{{ url_for('vendor_page.accept_order', orderid=order.id)}}">Accept</a></td>
             <td><a href="{{ url_for('vendor_page.reject_order', orderid=order.id)}}">Reject</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
         {% endif %}
@@ -55,4 +70,5 @@
     </ul>
 </div>
 </div>
+
 {% endblock body %}

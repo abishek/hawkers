@@ -14,10 +14,24 @@
    			</thead>
    			<tr ng-repeat="item in hawker.menu">
    				<td>{{item.name}}<p/><em>{{item.description}}</em></td>
-   				<td><img ng-src={{item.image}} alt="..." class="img-circle"></td>
+   				<td><a href="#" ng-click="open(item)"><img ng-src={{item.thumb}} alt="..." class="img-circle"></a></td>
    				<td>{{item.price}}</td>
    				<td><button type="btn btn-default" ng-show="item.isAvailable=='True'" ng-click="addToOrder(hawker, item)">Add To Order</button></td>
    			</tr>
    		</table>
 	</div>
+	<div class="modal fade" modal="showModal" role="dialog" tabindex="-1" close="close()">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+		 <div class="modal-header">
+        	<button type="button" class="close" ng-click="close()" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+    	<div class="modal-body">
+        	<img ng-src={{image}} class="img-responsive">
+    	</div>
+		</div>
+		</div>
+  	</div>
 </div>
