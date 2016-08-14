@@ -64,6 +64,63 @@ def index() :
     except TemplateNotFound:
         abort(404)
 
+# Manage Owners
+@vendor_page.route('/owner')
+def manage_owners() :
+    if not g.user.is_admin :
+        return redirect(url_for('vendor_page.index'))
+    users = User.query.all()
+    return render_template('owner.html', users=users)
+
+@vendor_page.route('/owner/<int:userid>/edit')
+def edit_user(userid, methods=['POST', 'GET']) :
+    user_form = UserForm(request.form)
+    user = Users.query.get(userid)
+    if request.method == 'POST' and user_form.validate() :
+        user.login = user_form.login.data
+        user.first_name = user_form.first_name.data
+        user.last_name = user_form.last_name.data
+        user.email = user_form.email.data
+        db.session.commit()
+        return redirect(url_for('vendor_page.index'))
+
+    return render_template('edituser.html', user=user, form=user_form)
+
+@vendor_page.route('/owner/<int:userid>/delete')
+def delete_user(userid,  methods=['POST', 'GET']) :
+    user = Users.query.get(userid)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('vendor_page.index'))
+
+@vendor_page.route('/owner/<int:userid>/changepass')
+def change_user_pass(userid,  methods=['POST', 'GET']) :
+    user = Users.query.get(userid)
+    user_pass_form = UserPassForm(request.form)
+
+    if request.method == 'POST' and user_pass_form.validate() :
+        user.password = user_pass_form.password.data
+        db.session.commit()
+        return redirect(url_for('vendor_page.index'))
+
+    return render_template('changepassword.html', user=user, form=user_pass_form)
+
+@vendor_page.route('/owner/add')
+def add_owner(methods=['POST', 'GET']) :
+    user_form = UserForm(request.form)
+
+    if request.method == 'POST' and user_form.validate() :
+        user = User()
+        user.first_name = user_form.first_name.data
+        user.last_name = user_form.last_name.data
+        user.login = user_form.login.data
+        user.email = user_form.email.data
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('vendor_page.index'))
+
+    return render_template('addowner.html', form=user_form)
+    
 # Manage Stalls
 @vendor_page.route('/stall')
 def manage_stall() :

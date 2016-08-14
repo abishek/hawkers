@@ -12,6 +12,9 @@
 	</div>
   
     <table class="table table-hover">
+        {% if current_user.is_admin %}
+        <tr><td><a href="/vendors/owner">Manage Owners</a></td></tr>
+        {% endif %}
         <tr><td><a href="/vendors/stall">Manage Stalls</a></td></tr>
         <tr><td><a href="/vendors/food">Manage Food Items</a></td></tr>
         <tr><td><a href="/vendors/time">Manage Cut Off Times</a></td></tr>
