@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, abort, g, request, session
 from flask import flash, redirect, url_for
+from flask.ext.mail import Mail, Message
 from jinja2 import TemplateNotFound  
 from flask_login import login_required
 from hawkers.models import User, Hawker, CutOffTime, Food, Order, OrderItem, db
@@ -16,6 +17,7 @@ vendor_page.config = {}
 @vendor_page.record
 def record_app_settings(setup_state) :
     app = setup_state.app
+    vendor_page.mail = Mail(app)
     vendor_page.config = dict([(key, value) for (key, value) in app.config.items()])
     
 def allowed_file(filename) :
@@ -309,6 +311,12 @@ def accept_order(orderid) :
     order = Order.query.get(orderid)
     order.accepted = 1
     db.session.commit()
+    msg = Message('Order accepted!', 
+                    sender=vendor_page.config['DEFAULT_MAIL_SENDER'], 
+                    recipients=[order.hawker.email, order.customer_email])
+    msg.html = render_template("accept.html", name=order.customer_name)
+    vendor_page.mail.send(msg)
+
     return redirect(url_for('vendor_page.index'))
 
 @vendor_page.route('/order/<int:orderid>/reject')
@@ -316,6 +324,11 @@ def reject_order(orderid) :
     order = Order.query.get(orderid)
     order.accepted = 2
     db.session.commit()
+    msg = Message('Order rejected :( ', 
+                    sender=vendor_page.config['DEFAULT_MAIL_SENDER'], 
+                    recipients=[order.hawker.email, order.customer_email])
+    msg.html = render_template("reject.html", name=order.customer_name)
+    vendor_page.mail.send(msg)
     return redirect(url_for('vendor_page.index'))
     
 @vendor_page.route('/order/<int:orderid>/details')

@@ -108,8 +108,8 @@ def place_order() :
                                         hawkerName=jsondata['currentHawker']['name'], 
                                         totalCost=jsondata['totalCost'], 
                                         items=jsondata['orderData'])
-    #mail.send(msg)
-    print(msg.html)
+    mail.send(msg)
+    #print(msg.html)
     return 'Success'
 
 
