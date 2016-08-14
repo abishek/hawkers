@@ -27,6 +27,7 @@ class StallForm(form.Form) :
     name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=100)])
     address = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=500)])
     pincode = fields.IntegerField('PinCode', [validators.InputRequired()])
+    email = fields.TextField('E-Mail', [validators.InputRequired(), validators.Email()])
     contact_number = fields.IntegerField('Contact Number', [validators.InputRequired(), ])
     owner = fields.SelectField('Owner', coerce=int)
     
@@ -50,7 +51,7 @@ class FoodForm(form.Form):
 	        field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
 	    
 class TimeForm(form.Form) :
-    cutofftime = TimeField('Cut Off Time', [validators.InputRequired(),])
+    cutofftime = TimeField('Cut Off Time (24 Hr, HH:MM:SS Format)', [validators.InputRequired(),])
     
 # Routes
 @vendor_page.route('/')
@@ -100,6 +101,7 @@ def add_stall() :
         h.name = stall_form.name.data
         h.address = stall_form.address.data
         h.pincode = stall_form.pincode.data
+        h.email = stall_form.email.data
         h.contact_number = stall_form.contact_number.data
         db.session.add(h)
         db.session.commit()
@@ -125,12 +127,14 @@ def modify_stall(id) :
         stall.address = stall_form.address.data
         stall.pincode = stall_form.pincode.data
         stall.contact_number = stall_form.contact_number.data
+        stall.email = stall_form.email.data
         db.session.commit()
         return redirect(url_for('vendor_page.index'))
     else :
         stall_form.name.data = stall.name
         stall_form.address.data = stall.address
         stall_form.pincode.data = stall.pincode
+        stall_form.email.data = stall.email
         stall_form.contact_number.data = stall.contact_number
         
     return render_template('editstall.html', form=stall_form, stallid=stall.id)
@@ -147,7 +151,7 @@ def delete_stall(id):
 def manage_food() :
     stalls = None
     foods = None
-    stallid = None
+    stallid = 0
     if g.user.is_admin :
         stalls = Hawker.query.all()
     else :
@@ -163,7 +167,7 @@ def manage_food() :
                 name, ext = food.image.rsplit('.', 1)
                 food.thumb = '%s_thumb.%s'%(name, ext)
         
-    return render_template('food.html', stalls=stalls, foods=foods, id=stallid)
+    return render_template('food.html', stalls=stalls, foods=foods, id=int(stallid))
 
 @vendor_page.route('/food/<int:stallid>/add', methods=['POST', 'GET'])
 def add_food(stallid) :
@@ -281,7 +285,7 @@ def modify_time(stall_id):
 def manage_orders() :
     stalls = None
     orders = None
-    stallid = None
+    stallid = 0
     foods = None
     if g.user.is_admin :
         stalls = Hawker.query.all()
@@ -298,15 +302,21 @@ def manage_orders() :
             for orderitem in orderitems :
                 foods[order.id].append(Food.query.get(orderitem.food_id))
 
-    return render_template('order.html', stalls=stalls, orders=orders, foods=foods, id=stallid)
+    return render_template('order.html', stalls=stalls, orders=orders, foods=foods, id=int(stallid))
 
 @vendor_page.route('/order/<int:orderid>/accept')
 def accept_order(orderid) :
-    pass
+    order = Order.query.get(orderid)
+    order.accepted = 1
+    db.session.commit()
+    return redirect(url_for('vendor_page.index'))
 
 @vendor_page.route('/order/<int:orderid>/reject')
 def reject_order(orderid) :
-    pass
+    order = Order.query.get(orderid)
+    order.accepted = 2
+    db.session.commit()
+    return redirect(url_for('vendor_page.index'))
     
 @vendor_page.route('/order/<int:orderid>/details')
 def order_details(orderid) :

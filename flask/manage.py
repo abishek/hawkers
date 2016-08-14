@@ -62,6 +62,7 @@ def populatedata() :
     h.address = 'Golden Palace Eating House, 5 Kallang Sector, Singapore'
     h.pincode = 349279
     h.contact_number = 99991111
+    h.email = 'goda.abishek@gmail.com'
     h.owner = User.query.filter_by(login='vndr').first().id
     db.session.add(h)
     db.session.commit()

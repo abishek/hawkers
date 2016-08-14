@@ -12,6 +12,7 @@ class Hawker(db.Model) :
     address = db.Column(db.String(150), nullable=False)
     pincode = db.Column(db.Integer, nullable=False) 
     contact_number = db.Column(db.Integer, unique=True)
+    email = db.Column(db.String(120), nullable=False)
     order = db.relationship('Order', backref='hawker', lazy='dynamic')
     pccache = db.relationship('PincodeCache', backref='hawker')
     owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -91,7 +92,7 @@ class Order(db.Model) :
 	customer_pincode = db.Column(db.Integer, nullable=False)
 	hawker_id = db.Column(db.Integer, db.ForeignKey('hawker.id'))
 	# Order State
-	accepted = db.Column(db.Boolean, default=False)
+	accepted = db.Column(db.Integer, default=0, nullable=False)
 	
 	def __repr__(self) :
 		return '%s | %s | %d | %s'%(self.customer_name, self.customer_email, 

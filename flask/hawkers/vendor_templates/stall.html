@@ -19,6 +19,7 @@
                 <th>Name</th>
                 <th>Pin Code</th>
                 <th>Contact Number</th>
+                <th>EMail</th>
                 <th>Address</th>
                 </tr>
                 {% for stall in stalls %}
@@ -27,6 +28,7 @@
                 <td>{{ stall.name }}</td>
                 <td>{{ stall.pincode }}</td>
                 <td>{{ stall.contact_number }}</td>
+                <td>{{ stall.email }}</td>
                 <td>{{ stall.address }} </td>
                 <td> <a href="{{ url_for('vendor_page.modify_stall', id=stall.id) }}">Modify</a> </td>
                 <td> <a href="{{ url_for('vendor_page.delete_stall', id=stall.id) }}">Delete</a> </td>

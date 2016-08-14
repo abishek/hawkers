@@ -96,14 +96,14 @@ def place_order() :
         f = Food.query.get(item['fid'])
         oi = OrderItem()
         oi.food_id = item['fid']
-        oi.order = o.id
+        oi.order_id = o.id
         db.session.add(oi)
         
     db.session.commit()   
-        
+    
     msg = Message('Order placed %s'%str(dt), 
                     sender=app.config['DEFAULT_MAIL_SENDER'], 
-                    recipients=['goda.abishek@gmail.com', jsondata['email']])
+                    recipients=[o.hawker.email, jsondata['email']])
     msg.html = render_template("email.html", name=jsondata['name'], phone=jsondata['HP'], 
                                         hawkerName=jsondata['currentHawker']['name'], 
                                         totalCost=jsondata['totalCost'], 
