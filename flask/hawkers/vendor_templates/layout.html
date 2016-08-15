@@ -24,8 +24,8 @@
         <ul class="dropdown-menu">
             <li><a href="{{url_for('vendor_page.index')}}">Home</a></li>
             <li><a href="{{url_for('vendor_page.change_user_pass', userid=current_user.id)}}">Change Password</a></li>
-            <li role="separator" class="divider">></li>
-            <li><a href="{{ url_for('login.logoutaction') }}">Log out</a></li>
+            <!--li role="separator" class="divider"></li-->
+            <li><a href="{{ url_for('auth.logoutaction') }}">Log out</a></li>
         </ul>
     </div>
     {% endif %}
