@@ -8,6 +8,7 @@ from wtforms import form, fields, validators, ValidationError
 from wtforms_components import TimeField
 import re, os
 from werkzeug import secure_filename
+from werkzeug.security import check_password_hash, generate_password_hash
 from PIL import Image
 
 vendor_page = Blueprint('vendor_page', __name__, template_folder='vendor_templates')
@@ -24,7 +25,31 @@ def allowed_file(filename) :
     ret = '.' in filename and filename.rsplit('.', 1)[1] in ('jpg')
     return ret
 	
-# Forms		
+# Forms
+class UserForm(form.Form) :
+    login = fields.TextField('Login Name', [validators.InputRequired(), validators.Length(max=80)])
+    first_name = fields.TextField('First Name', [validators.InputRequired(), validators.Length(max=100)])
+    last_name = fields.TextField('Last Name', [validators.InputRequired(), validators.Length(max=100)])
+    email = fields.TextField('E-Mail', [validators.InputRequired(), validators.Email()])
+    
+class UserPassForm(form.Form) :
+    def __init__(self, *args, **kwargs):
+        super(UserPassForm, self).__init__(*args, **kwargs)
+        self.user_pass = kwargs['user_pass']
+
+    login = fields.TextField('Login Name', [validators.InputRequired(), validators.Length(max=80)])
+    current_password = fields.PasswordField('Current Password', [validators.InputRequired()])
+    password = fields.PasswordField('Password', [validators.InputRequired()])
+    password_a = fields.PasswordField('Password Again', [validators.InputRequired()])
+
+    def validate_current_password(form, Field) :
+        if not check_password_hash(form.user_pass, form.current_password.data):
+			raise validators.ValidationError('Invalid password')
+
+    def validate_password(form, Field) :
+        if not form.password.data == form.password_a.data :
+            raise validators.ValidationError('Password do not match')
+
 class StallForm(form.Form) :
     name = fields.TextField('Name', [validators.InputRequired(), validators.Length(max=100)])
     address = fields.TextAreaField('Address', [validators.InputRequired(), validators.Length(max=500)])
@@ -72,10 +97,10 @@ def manage_owners() :
     users = User.query.all()
     return render_template('owner.html', users=users)
 
-@vendor_page.route('/owner/<int:userid>/edit')
-def edit_user(userid, methods=['POST', 'GET']) :
+@vendor_page.route('/owner/<int:userid>/edit', methods=['POST', 'GET'])
+def edit_user(userid) :
     user_form = UserForm(request.form)
-    user = Users.query.get(userid)
+    user = User.query.get(userid)
     if request.method == 'POST' and user_form.validate() :
         user.login = user_form.login.data
         user.first_name = user_form.first_name.data
@@ -83,30 +108,38 @@ def edit_user(userid, methods=['POST', 'GET']) :
         user.email = user_form.email.data
         db.session.commit()
         return redirect(url_for('vendor_page.index'))
+    else :
+        user_form.login.data = user.login
+        user_form.first_name.data = user.first_name
+        user_form.last_name.data = user.last_name
+        user_form.email.data = user.email
 
-    return render_template('edituser.html', user=user, form=user_form)
+    return render_template('editowner.html', user=user, form=user_form)
 
-@vendor_page.route('/owner/<int:userid>/delete')
-def delete_user(userid,  methods=['POST', 'GET']) :
-    user = Users.query.get(userid)
+@vendor_page.route('/owner/<int:userid>/delete', methods=['GET'])
+def delete_user(userid) :
+    user = User.query.get(userid)
+    if user.is_admin :
+        return redirect(url_for('vendor_page.index'))    
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('vendor_page.index'))
 
-@vendor_page.route('/owner/<int:userid>/changepass')
-def change_user_pass(userid,  methods=['POST', 'GET']) :
-    user = Users.query.get(userid)
-    user_pass_form = UserPassForm(request.form)
+@vendor_page.route('/owner/<int:userid>/changepass', methods=['POST', 'GET'])
+def change_user_pass(userid) :
+    user = User.query.get(userid)
+    user_pass_form = UserPassForm(request.form, user_pass=user.password)
+    user_pass_form.login.data = user.login
 
     if request.method == 'POST' and user_pass_form.validate() :
-        user.password = user_pass_form.password.data
+        user.password = generate_password_hash(user_pass_form.password.data)
         db.session.commit()
         return redirect(url_for('vendor_page.index'))
 
-    return render_template('changepassword.html', user=user, form=user_pass_form)
+    return render_template('changepass.html', user=user, form=user_pass_form)
 
-@vendor_page.route('/owner/add')
-def add_owner(methods=['POST', 'GET']) :
+@vendor_page.route('/owner/add', methods=['POST', 'GET'])
+def add_owner() :
     user_form = UserForm(request.form)
 
     if request.method == 'POST' and user_form.validate() :
@@ -115,12 +148,13 @@ def add_owner(methods=['POST', 'GET']) :
         user.last_name = user_form.last_name.data
         user.login = user_form.login.data
         user.email = user_form.email.data
+        user.password = generate_password_hash(user.login)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('vendor_page.index'))
 
     return render_template('addowner.html', form=user_form)
-    
+
 # Manage Stalls
 @vendor_page.route('/stall')
 def manage_stall() :

@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{{ super() }}
+<div class="container">
+<div class="row-fluid">
+
+	<div class="jumbotron">
+  		<h1 class="text-center">The Hawker Delivery Project</h1>
+  		<p/>
+  		<p class="text-right"><small>Vendor Console</small></p>
+	</div>
+  
+    <ul class="list-group">
+        <li class="list-group-item"> 
+            <form method="post" action="/vendors/owner/{{user.id}}/edit">
+            <div class="form-group">
+                {{ render_field(form.login) }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.first_name) }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.last_name) }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.email) }}
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Update User</button>
+            </div>
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+{% endblock body %}

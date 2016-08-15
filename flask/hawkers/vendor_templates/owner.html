@@ -31,13 +31,20 @@
             <td>{{ user.last_name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.is_admin }}</td>
+            {% if not user.is_admin %}
             <td><a href="{{ url_for('vendor_page.edit_user', userid=user.id)}}">Modify</a></td>
             <td><a href="{{ url_for('vendor_page.delete_user', userid=user.id)}}">Delete</a></td>
             <td><a href="{{ url_for('vendor_page.change_user_pass', userid=user.id)}}">Change Password</a></td>
+            {% else %}
+            <td colspan=3><a href="{{ url_for('vendor_page.change_user_pass', userid=user.id)}}">Change Password</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
         {% endif %}
         </table>
+        </li>
+        <li class="list-group-item">
+            <a href="{{ url_for('vendor_page.add_owner') }}">Add User</a>
         </li>
     </ul>
 </div>
